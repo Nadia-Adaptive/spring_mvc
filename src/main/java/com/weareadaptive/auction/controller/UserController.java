@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-import static utils.ResponseUtil.createResponse;
-
 @RestController()
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping(value = "/user")
@@ -45,11 +43,14 @@ public class UserController {
 
     @PostMapping(value = "/")
     public ResponseEntity createUser(@RequestBody final HashMap<String, String> body) {
-        System.out.println(body);
         try {
-            userService.create(body.get("username"), body.get("password"), body.get("firstName"), body.get("lastName"),
-                    body.get("organisation"));
-            return ResponseEntity.ok().build();
+            if (body.get("username").matches("^[a-zA-Z0-9]*$")) {
+                userService.create(body.get("username"), body.get("password"), body.get("firstName"),
+                        body.get("lastName"),
+                        body.get("organisation"));
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.badRequest().build();
         } catch (final BusinessException e) {
             return ResponseEntity.badRequest().build();
         }

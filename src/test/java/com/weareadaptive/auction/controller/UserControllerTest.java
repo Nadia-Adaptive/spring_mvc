@@ -42,7 +42,7 @@ class UserControllerTest {
                          "password": "password", "organisation": "Organisation 1" }""",
                 """
                         {   "username": "test03", "firstName": "test03",
-                            "lastName": "test03", "password": "invalid",
+                            "lastName": "test03", "password": "",
                             "organisation": "Organisation 1" }""",
                 """
                         { "username":"test_03", "firstName":"test03", "lastName":"test03",
@@ -68,7 +68,7 @@ class UserControllerTest {
                 .body(
                         "id", equalTo(id), "username", equalTo("test01"),
                         "firstName", equalTo("test"), "lastName", equalTo("test"),
-                        "organisation", equalTo("org1"), "status", equalTo("ALLOWED"), "admin", equalTo(false));
+                        "organisation", equalTo("org1"), "accessStatus", equalTo("ALLOWED"), "admin", equalTo(false));
     }
 
     @Test
@@ -92,9 +92,9 @@ class UserControllerTest {
     @Test
     public void postUser_createUserWithValidInputs_ReturnsMessageAnd200() {
         final String userInput = """
-                { "username":"test03", "firstName":"test03",
-                  "lastName":"test03",  "password":"password",
-                  "organisation":"Organisation 1"  }""";
+                   {   "username": "test03", "firstName": "test03",
+                   "lastName": "test03", "password": "invalid",
+                   "organisation": "Organisation 1" }""";
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)

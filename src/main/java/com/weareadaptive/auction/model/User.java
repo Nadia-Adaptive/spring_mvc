@@ -14,7 +14,7 @@ public class User implements Entity {
     private String organisation;
     private String phone;
     private String email;
-    private AccessStatus status;
+    private AccessStatus accessStatus;
 
     public User(final int id, final String username, final String password, final String firstName,
                 final String lastName, final String organisation) {
@@ -46,7 +46,7 @@ public class User implements Entity {
         this.lastName = lastName;
         this.organisation = organisation;
         this.isAdmin = isAdmin;
-        this.status = AccessStatus.ALLOWED;
+        this.accessStatus = AccessStatus.ALLOWED;
     }
 
     @Override
@@ -83,11 +83,11 @@ public class User implements Entity {
     }
 
     public AccessStatus getAccessStatus() {
-        return status;
+        return accessStatus;
     }
 
     public void setAccessStatus(final AccessStatus status) {
-        this.status = status;
+        this.accessStatus = status;
     }
 
 
