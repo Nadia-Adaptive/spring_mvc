@@ -2,6 +2,7 @@ package com.weareadaptive.auction.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class State<T extends Entity> {
   public static final String ITEM_ALREADY_EXISTS = "Item already exists";
@@ -19,12 +20,15 @@ public class State<T extends Entity> {
   protected void onAdd(final T model) {
 
   }
-
   public void add(final T model) {
+    System.out.println(model.getId());
     if (entities.containsKey(model.getId())) {
       throw new BusinessException(ITEM_ALREADY_EXISTS);
     }
     onAdd(model);
     entities.put(model.getId(), model);
+  }
+  protected Stream<T> stream(){
+    return entities.values().stream();
   }
 }

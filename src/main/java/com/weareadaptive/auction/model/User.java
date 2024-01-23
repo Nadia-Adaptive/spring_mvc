@@ -2,12 +2,12 @@ package com.weareadaptive.auction.model;
 
 import java.util.Objects;
 
-import static com.weareadaptive.auction.StringUtil.isNullOrEmpty;
+import static utils.StringUtil.isNullOrEmpty;
 
 public class User implements Entity {
     private final int id;
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
     private final boolean isAdmin;
     private String firstName;
     private String lastName;
@@ -46,7 +46,7 @@ public class User implements Entity {
         this.lastName = lastName;
         this.organisation = organisation;
         this.isAdmin = isAdmin;
-        this.status = AccessStatus.PENDING;
+        this.status = AccessStatus.ALLOWED;
     }
 
     @Override
@@ -82,11 +82,11 @@ public class User implements Entity {
         return isAdmin;
     }
 
-    public AccessStatus getStatus() {
+    public AccessStatus getAccessStatus() {
         return status;
     }
 
-    public void setStatus(final AccessStatus status) {
+    public void setAccessStatus(final AccessStatus status) {
         this.status = status;
     }
 
@@ -110,8 +110,8 @@ public class User implements Entity {
 
     public void update(final String username, final String password, final String firstName, final String lastName,
                        final String organisation) {
-//        this.username = isNullOrEmpty(username) ? this.username : username;
-//        this.password = isNullOrEmpty(password) ? this.password : password;
+        this.username = isNullOrEmpty(username) ? this.username : username;
+        this.password = isNullOrEmpty(password) ? this.password : password;
         this.firstName = isNullOrEmpty(firstName) ? this.firstName : firstName;
         this.lastName = isNullOrEmpty(lastName) ? this.lastName : lastName;
         this.organisation = isNullOrEmpty(organisation) ? this.organisation : organisation;

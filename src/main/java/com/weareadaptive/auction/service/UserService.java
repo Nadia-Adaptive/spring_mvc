@@ -24,4 +24,8 @@ public class UserService {
     userState.add(user);
     return user;
   }
+
+  public User getUser(int id) {
+      return userState.getUserById(id);
+  }
 }

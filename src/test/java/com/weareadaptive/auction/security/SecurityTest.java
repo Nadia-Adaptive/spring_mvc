@@ -16,67 +16,67 @@ import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SecurityTest {
-  @Autowired
-  private TestData testData;
-  @LocalServerPort
-  private int port;
-  private String uri;
+    @Autowired
+    private TestData testData;
+    @LocalServerPort
+    private int port;
+    private String uri;
 
-  @BeforeEach
-  public void initialiseRestAssuredMockMvcStandalone() {
-    uri = "http://localhost:" + port;
-  }
+    @BeforeEach
+    public void initialiseRestAssuredMockMvcStandalone() {
+        uri = "http://localhost:" + port;
+    }
 
-  @Test
-  public void shouldBeUnauthorizedWhenNotAuthenticated() {
-    //@formatter:off
-    given()
-      .baseUri(uri)
-    .when()
-      .get("/test")
-    .then()
-      .statusCode(HttpStatus.UNAUTHORIZED.value());
-    //@formatter:on
-  }
+    @Test
+    public void shouldBeUnauthorizedWhenNotAuthenticated() {
+        //@formatter:off
+        given()
+                .baseUri(uri)
+                .when()
+                .get("/test")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        //@formatter:on
+    }
 
-  @Test
-  public void shouldBeAuthenticated() {
-    //@formatter:off
-    given()
-      .baseUri(uri)
-      .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
-    .when()
-      .get("/test")
-    .then()
-      .statusCode(HttpStatus.OK.value())
-      .body(equalTo("houra"));
-    //@formatter:on
-  }
+    @Test
+    public void shouldBeAuthenticated() {
+        //@formatter:off
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .get("/test")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(equalTo("houra"));
+        //@formatter:on
+    }
 
-  @Test
-  public void shouldBeAnAdmin() {
-    //@formatter:off
-    given()
-      .baseUri(uri)
-      .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
-    .when()
-      .get("/test/adminOnly")
-    .then()
-      .statusCode(HttpStatus.OK.value())
-      .body(equalTo("super"));
-    //@formatter:on
-  }
+    @Test
+    public void shouldBeAnAdmin() {
+        //@formatter:off
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .get("/test/adminOnly")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(equalTo("super"));
+        //@formatter:on
+    }
 
-  @Test
-  public void shouldReturnForbiddenWhenNotAnAdmin() {
-    //@formatter:off
-    given()
-      .baseUri(uri)
-      .header(AUTHORIZATION, testData.user1Token())
-    .when()
-      .get("/test/adminOnly")
-    .then()
-      .statusCode(HttpStatus.FORBIDDEN.value());
-    //@formatter:on
-  }
+    @Test
+    public void shouldReturnForbiddenWhenNotAnAdmin() {
+        //@formatter:off
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, testData.user1Token())
+                .when()
+                .get("/test/adminOnly")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+        //@formatter:on
+    }
 }

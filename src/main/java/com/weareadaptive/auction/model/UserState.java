@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserState extends State<User> {
-
     private final Map<String, User> usernameIndex;
 
     public UserState() {
@@ -20,7 +19,7 @@ public class UserState extends State<User> {
     @Override
     protected void onAdd(final User model) {
         if (usernameIndex.containsKey(model.getUsername())) {
-            throw new BusinessException(format("Username \"%s\" already exist", model.getUsername()));
+            throw new BusinessException(format("Username \"%s\" already exists", model.getUsername()));
         }
         usernameIndex.put(model.getUsername(), model);
     }
@@ -39,5 +38,9 @@ public class UserState extends State<User> {
 
     public User getUserById(final int id) {
         return usernameIndex.values().stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+    }
+
+    public User getUserByUsername(final String username) {
+        return usernameIndex.get(username);
     }
 }

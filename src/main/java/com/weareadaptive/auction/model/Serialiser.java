@@ -1,11 +1,15 @@
 package com.weareadaptive.auction.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component // TODO: Is this a service or a component?
+import java.util.HashMap;
+import java.util.Map;
+
+@Component
 @Scope("singleton")
 public class Serialiser {
     private final ObjectMapper mapper = new ObjectMapper();

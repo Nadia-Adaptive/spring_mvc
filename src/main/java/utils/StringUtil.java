@@ -1,4 +1,4 @@
-package com.weareadaptive.auction;
+package utils;
 
 public final class StringUtil {
     private StringUtil() {
