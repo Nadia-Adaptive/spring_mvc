@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 
 import java.util.stream.Stream;
 
@@ -51,7 +52,7 @@ class UserControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        uri = "http://localhost:" + port + "/user/";
+        uri = "http://localhost:" + port + "/users/";
     }
 
     @Test
@@ -64,7 +65,7 @@ class UserControllerTest {
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .when()
                 .get(String.valueOf(id)).then()
-                .statusCode(200).assertThat()
+                .statusCode(HttpStatus.OK.value()).assertThat()
                 .body(
                         "id", equalTo(id), "username", equalTo("test01"),
                         "firstName", equalTo("test"), "lastName", equalTo("test"),
@@ -77,7 +78,7 @@ class UserControllerTest {
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .when().get("-1").then()
-                .statusCode(404);
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -86,7 +87,7 @@ class UserControllerTest {
                 .baseUri(uri)
                 .header(AUTHORIZATION, testData.user1Token())
                 .when().get("3").then()
-                .statusCode(403);
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
@@ -103,7 +104,7 @@ class UserControllerTest {
                 .body(userInput)
                 .post()
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     @ParameterizedTest()
@@ -117,6 +118,6 @@ class UserControllerTest {
                 .body(input)
                 .post()
                 .then()
-                .statusCode(400);
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }
