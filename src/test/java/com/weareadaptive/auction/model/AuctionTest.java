@@ -1,4 +1,4 @@
-package com.weareadaptive.auction.model.model;
+package com.weareadaptive.auction.model.service;
 
 import com.weareadaptive.auction.model.Auction;
 import com.weareadaptive.auction.model.AuctionStatus;

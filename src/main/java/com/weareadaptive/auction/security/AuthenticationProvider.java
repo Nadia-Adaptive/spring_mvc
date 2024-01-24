@@ -1,6 +1,6 @@
 package com.weareadaptive.auction.security;
 
-import com.weareadaptive.auction.model.UserState;
+import com.weareadaptive.auction.user.UserService;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Optional;
@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class AuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
     @Autowired
-    private UserState userState;
+    private UserService userService;
 
     @Override
     public boolean supports(final Class<?> authentication) {
@@ -51,15 +51,15 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         }
         var username = token.substring(0, splitIndex);
         var password = token.substring(splitIndex + 1);
-        var user = userState.validateUsernamePassword(username, password);
+        var user = userService.validateUserCredentials(username, password);
 
-        if (user.isEmpty()) {
+        if (user == null) {
             throw new UsernameNotFoundException("Bad token");
         }
         return User.builder()
-                .username(user.get().getUsername())
+                .username(user.getUsername())
                 .password(password)
-                .roles(user.get().isAdmin() ? "ADMIN" : "USER") // TODO: Refactor to use enum
+                .roles(user.getUserRole().toString())
                 // .disabled(user.get().isBlocked())
                 .build();
     }

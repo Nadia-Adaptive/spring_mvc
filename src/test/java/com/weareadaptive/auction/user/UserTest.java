@@ -1,6 +1,9 @@
-package com.weareadaptive.auction.model;
+package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.User;
+import com.weareadaptive.auction.model.AccessStatus;
+import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.user.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -19,15 +22,15 @@ public class UserTest {
     private static Stream<Arguments> createUserArguments() {
         return Stream.of(
                 Arguments.of("username",
-                        (Executable) () -> new User(1, null, "pp", "first", "last", "Org")),
+                        (Executable) () -> new User(1, null, "pp", "first", "last", "Org", UserRole.USER)),
                 Arguments.of("firstName",
-                        (Executable) () -> new User(1, "username", "pp", null, "last", "Org")),
+                        (Executable) () -> new User(1, "username", "pp", null, "last", "Org", UserRole.USER)),
                 Arguments.of("lastName",
-                        (Executable) () -> new User(1, "username", "pp", "first", null, "Org")),
+                        (Executable) () -> new User(1, "username", "pp", "first", null, "Org", UserRole.USER)),
                 Arguments.of("organisation",
-                        (Executable) () -> new User(1, "username", "pp", "first", "last", null)),
+                        (Executable) () -> new User(1, "username", "pp", "first", "last", null, UserRole.USER)),
                 Arguments.of("password",
-                        (Executable) () -> new User(1, "username", null, "first", "last", "Org"))
+                        (Executable) () -> new User(1, "username", null, "first", "last", "Org", UserRole.USER))
         );
     }
 
@@ -45,7 +48,7 @@ public class UserTest {
     @Test
     @DisplayName("ValidatePassword should return false when the password is not valid")
     public void shouldReturnFalseWhenThePasswordIsNotValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive");
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
 
         final var result = user.validatePassword("bad");
 
@@ -55,7 +58,7 @@ public class UserTest {
     @Test
     @DisplayName("ValidatePassword should return true when the password is valid")
     public void shouldReturnTrueWhenThePasswordIsValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive");
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
 
         final var result = user.validatePassword("thepassword");
 
@@ -65,7 +68,7 @@ public class UserTest {
     @Test
     @DisplayName("update should modify the user's details with the new values")
     public void shouldModifyUserWithNewFields() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive");
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
         final var testName = "Test user01";
 
         user.update(testName, "", "", "", "");
@@ -76,7 +79,7 @@ public class UserTest {
     @Test
     @DisplayName("update should not modify the user's details with the new values if values are empty")
     public void shouldNotModifyUserWithNewFieldsIfTheFieldsAreEmpty() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive");
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
 
         user.update("", "", "", "", "");
 
@@ -86,8 +89,8 @@ public class UserTest {
     @Test
     @DisplayName("a new user's default access status should be allowed")
     public void userDefaultStatusIsAllowed() {
-        final var user = new User(1, "test", "thepassword", "John", "Doe", "Adaptive");
+        final var user = new User(1, "test", "thepassword", "John", "Doe", "Adaptive", UserRole.USER);
 
-        assertEquals(AccessStatus.ALLOWED, user.getAccessStatus());
+        Assertions.assertEquals(AccessStatus.ALLOWED, user.getAccessStatus());
     }
 }

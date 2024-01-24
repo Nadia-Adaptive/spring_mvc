@@ -1,5 +1,6 @@
 import com.weareadaptive.auction.model.OrganisationState;
-import com.weareadaptive.auction.model.User;
+import com.weareadaptive.auction.user.User;
+import com.weareadaptive.auction.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,6 @@ public class OrganisationStateTest {
     @Test
     @DisplayName("removeUserFromOrganisation should remove existing user from specified organisation")
     public void doNothingIfUserDoesntExist() {
-        assertFalse(state.removeUserFromOrganisation(new User(15, "test", "password", "t", "t", "t"), ORG_1));
+        assertFalse(state.removeUserFromOrganisation(new User(15, "test", "password", "t", "t", "t", UserRole.USER), ORG_1));
     }
 }

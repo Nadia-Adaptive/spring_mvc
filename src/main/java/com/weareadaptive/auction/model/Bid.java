@@ -1,5 +1,7 @@
 package com.weareadaptive.auction.model;
 
+import com.weareadaptive.auction.user.User;
+
 import java.time.Instant;
 import java.util.Objects;
 

@@ -1,8 +1,7 @@
-package com.weareadaptive.auction.controller;
+package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.model.BusinessException;
-import com.weareadaptive.auction.model.User;
-import com.weareadaptive.auction.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,25 +36,19 @@ public class UserController {
     @PostMapping(value = "/")
     public ResponseEntity createUser(@RequestBody final HashMap<String, String> body) {
         try {
-            if (body.get("username").matches("^[a-zA-Z0-9]*$")) {
-                userService.create(body.get("username"), body.get("password"), body.get("firstName"),
-                        body.get("lastName"),
-                        body.get("organisation"));
-                return ResponseEntity.status(201).build();
-            }
-            return ResponseEntity.badRequest().build();
-        } catch (final BusinessException e) {
+            userService.createUser(body.get("username"), body.get("password"), body.get("firstName"),
+                    body.get("lastName"), body.get("organisation"), UserRole.valueOf(body.get("userRole")));
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (final IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity createUser(@PathVariable final int id, @RequestBody final HashMap<String, String> body) {
-        final var user = userService.updateUser(id, body.get("username"), body.get("password"), body.get("firstName"),
+    public ResponseEntity updateUser(@PathVariable final int id, @RequestBody final HashMap<String, String> body) {
+        userService.updateUser(id, body.get("username"), body.get("password"), body.get("firstName"),
                 body.get("lastName"), body.get("organisation"));
-        if (user != null) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok().build();
     }
 }

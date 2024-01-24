@@ -1,4 +1,4 @@
-package com.weareadaptive.auction.model;
+package com.weareadaptive.auction.user;
 
 import static java.lang.String.format;
 
@@ -6,13 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.model.State;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserState extends State<User> {
+public class UserRepository extends State<User> {
     private final Map<String, User> usernameIndex;
 
-    public UserState() {
+    public UserRepository() {
         usernameIndex = new HashMap<>();
     }
 
@@ -22,18 +24,6 @@ public class UserState extends State<User> {
             throw new BusinessException(format("Username \"%s\" already exists", model.getUsername()));
         }
         usernameIndex.put(model.getUsername(), model);
-    }
-
-
-    public Optional<User> validateUsernamePassword(final String username, final String password) {
-        if (!usernameIndex.containsKey(username)) {
-            return Optional.empty();
-        }
-        var user = usernameIndex.get(username);
-        if (!user.validatePassword(password)) {
-            return Optional.empty();
-        }
-        return Optional.of(user);
     }
 
     public User getUserById(final int id) {

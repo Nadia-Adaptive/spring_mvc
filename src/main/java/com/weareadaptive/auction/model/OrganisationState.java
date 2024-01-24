@@ -1,5 +1,8 @@
 package com.weareadaptive.auction.model;
 
+import com.weareadaptive.auction.user.User;
+import com.weareadaptive.auction.user.UserRole;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +24,7 @@ public class OrganisationState {
     }
 
     public void addUserToOrganisation(final User u) {
-        if (u.isAdmin()) { // Assuming admins should not be added to an organisation
+        if (u.getUserRole() == UserRole.ADMIN) { // Assuming admins should not be added to an organisation
             return;
         }
 

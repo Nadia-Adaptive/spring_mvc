@@ -1,4 +1,8 @@
-package com.weareadaptive.auction.model;
+package com.weareadaptive.auction.user;
+
+import com.weareadaptive.auction.model.AccessStatus;
+import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.model.Entity;
 
 import java.util.Objects;
 
@@ -8,7 +12,7 @@ public class User implements Entity {
     private final int id;
     private String username;
     private String password;
-    private final boolean isAdmin;
+    private final UserRole userRole;
     private String firstName;
     private String lastName;
     private String organisation;
@@ -17,13 +21,7 @@ public class User implements Entity {
     private AccessStatus accessStatus;
 
     public User(final int id, final String username, final String password, final String firstName,
-                final String lastName, final String organisation) {
-        this(id, username, password, firstName, lastName, organisation, false);
-    }
-
-    public User(final int id, final String username, final String password, final String firstName,
-                final String lastName,
-                final String organisation, final boolean isAdmin) {
+                final String lastName, final String organisation, final UserRole userRole) {
         if (isNullOrEmpty(username)) {
             throw new BusinessException("username cannot be null or empty");
         }
@@ -39,14 +37,18 @@ public class User implements Entity {
         if (isNullOrEmpty(organisation)) {
             throw new BusinessException("organisation cannot be null or empty");
         }
+        if (userRole == null) {
+            throw new BusinessException("organisation cannot be null");
+        }
+
         this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.organisation = organisation;
-        this.isAdmin = isAdmin;
         this.accessStatus = AccessStatus.ALLOWED;
+        this.userRole = userRole;
     }
 
     @Override
@@ -78,8 +80,8 @@ public class User implements Entity {
         return organisation;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public UserRole getUserRole() {
+        return userRole;
     }
 
     public AccessStatus getAccessStatus() {

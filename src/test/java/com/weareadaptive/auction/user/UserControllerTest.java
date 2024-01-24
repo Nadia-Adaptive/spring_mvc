@@ -1,8 +1,8 @@
-package com.weareadaptive.auction.controller;
+package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.TestData;
-import com.weareadaptive.auction.model.User;
-import com.weareadaptive.auction.model.UserState;
+import com.weareadaptive.auction.user.User;
+import com.weareadaptive.auction.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +22,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
     @Autowired
-    UserState state;
+    UserRepository state;
 
     @Autowired
     TestData testData;
@@ -34,20 +34,22 @@ class UserControllerTest {
     private static Stream<String> invalidInput() {
         return Stream.of("""
                         { "username": "", "firstName": "test03", "lastName": "test03",
-                        "password": "password", "organisation": "Organisation 1" }""",
+                        "password": "password", "organisation": "Organisation 1", "userRole": "USER" }""",
                 """
                         { "username": "test03", "firstName": "", "lastName": "test03",
-                            "password": "password", "organisation": "Organisation 1"  }""",
+                            "password": "password", "organisation": "Organisation 1", "userRole": "USER"  }""",
                 """
                         { "username": "test03", "firstName": "test03", "lastName": null,
-                         "password": "password", "organisation": "Organisation 1" }""",
+                         "password": "password", "organisation": "Organisation 1", "userRole": "USER" }""",
                 """
                         {   "username": "test03", "firstName": "test03",
-                            "lastName": "test03", "password": "",
-                            "organisation": "Organisation 1" }""",
+                            "lastName": "test03", "password": "", "organisation": "Organisation 1", "userRole": "USER" }""",
                 """
                         { "username":"test_03", "firstName":"test03", "lastName":"test03",
-                         "password":"password", "organisation":"Organisation 1"  }""");
+                         "password":"password", "organisation":"Organisation 1", "userRole": "USER"  }""",
+                """
+                        { "username":"test_03", "firstName":"test03", "lastName":"test03",
+                         "password":"password", "organisation":"Organisation 1", "userRole": ""  }""");
     }
 
     @BeforeEach
@@ -58,7 +60,7 @@ class UserControllerTest {
     @Test
     public void getUser_UserExistsAndRoleIsAdmin_ReturnsUserAnd200() {
         final var id = state.nextId();
-        final var user = new User(id, "test01", "password", "test", "test", "org1");
+        final var user = new User(id, "test01", "password", "test", "test", "org1", UserRole.USER);
         state.add(user);
         given()
                 .baseUri(uri)
@@ -69,7 +71,8 @@ class UserControllerTest {
                 .body(
                         "id", equalTo(id), "username", equalTo("test01"),
                         "firstName", equalTo("test"), "lastName", equalTo("test"),
-                        "organisation", equalTo("org1"), "accessStatus", equalTo("ALLOWED"), "admin", equalTo(false));
+                        "organisation", equalTo("org1"), "accessStatus", equalTo("ALLOWED"), "userRole",
+                        equalTo("USER"));
     }
 
     @Test
@@ -93,9 +96,9 @@ class UserControllerTest {
     @Test
     public void postUser_createUserWithValidInputs_ReturnsMessageAnd200() {
         final String userInput = """
-                   {   "username": "test03", "firstName": "test03",
-                   "lastName": "test03", "password": "invalid",
-                   "organisation": "Organisation 1" }""";
+                {   "username": "test03", "firstName": "test03",
+                "lastName": "test03", "password": "invalid",
+                "organisation": "Organisation 1", "userRole": "USER" }""";
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
@@ -117,6 +120,39 @@ class UserControllerTest {
                 .header("Content-Type", "application/json")
                 .body(input)
                 .post()
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test()
+    public void putUser_updateUserWithValidInputs_ReturnsMessageAnd200() {
+        final String input = """
+                { "organisation": "organisation 123" }""";
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(input)
+                .put("0")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test()
+    public void putUser_updateUserWithInvalidInputs_ReturnsMessageAnd400() {
+        final String input = """
+                { "firstName": "changed",
+                  "lastName": "",
+                  "password": "password",
+                }""";
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(input)
+                .put("0")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
