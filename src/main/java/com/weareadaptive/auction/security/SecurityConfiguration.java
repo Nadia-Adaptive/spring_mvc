@@ -1,7 +1,5 @@
 package com.weareadaptive.auction.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,7 +17,6 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
@@ -72,13 +69,9 @@ public class SecurityConfiguration {
     AuthenticationFilter authenticationFilter() throws Exception {
         final AuthenticationFilter filter = new AuthenticationFilter(PROTECTED_URLS);
         filter.setAuthenticationManager(authenticationConfiguration.getAuthenticationManager());
+        filter.setAuthenticationFailureHandler(new UnauthenticatedEntryPoint());
         //filter.setAuthenticationSuccessHandler(successHandler());
         return filter;
-    }
-
-    @Bean
-    AuthenticationEntryPoint forbiddenEntryPoint() {
-        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
     }
 
     @Bean

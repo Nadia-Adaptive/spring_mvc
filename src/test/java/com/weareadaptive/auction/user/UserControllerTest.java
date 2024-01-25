@@ -2,8 +2,6 @@ package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.TestData;
-import com.weareadaptive.auction.user.User;
-import com.weareadaptive.auction.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

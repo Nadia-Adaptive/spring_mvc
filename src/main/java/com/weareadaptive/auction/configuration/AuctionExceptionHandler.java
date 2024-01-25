@@ -38,11 +38,11 @@ public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(value = {AccessDeniedException.class})
-    protected ResponseEntity<Object> handleAuthorizationException(RuntimeException ex, WebRequest request) {
-        return handleExceptionInternal(ex, createJSONMessage(ErrorMessage.FORBIDDEN), headers,
-                HttpStatus.FORBIDDEN, request);
-    }
+//    @ExceptionHandler(value = {AccessDeniedException.class})
+//    protected ResponseEntity<Object> handleAuthorizationException(RuntimeException ex, WebRequest request) {
+//        return handleExceptionInternal(ex, createJSONMessage(ErrorMessage.FORBIDDEN), headers,
+//                HttpStatus.FORBIDDEN, request);
+//    }
 
     private ResponseError createJSONMessage(final ErrorMessage errorMessage) {
         return new ResponseError(errorMessage.getMessage());

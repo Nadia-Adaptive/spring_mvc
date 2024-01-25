@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.TestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -35,7 +36,8 @@ public class SecurityTest {
                 .when()
                 .get("/test")
                 .then()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("message", equalTo(ErrorMessage.UNAUTHORIZED.getMessage()));
         //@formatter:on
     }
 
@@ -76,7 +78,8 @@ public class SecurityTest {
                 .when()
                 .get("/test/adminOnly")
                 .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("message", equalTo(ErrorMessage.FORBIDDEN.getMessage()));
         //@formatter:on
     }
 }

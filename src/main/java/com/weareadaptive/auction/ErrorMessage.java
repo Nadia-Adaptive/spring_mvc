@@ -5,7 +5,9 @@ public enum ErrorMessage {
     BAD_REQUEST("Bad request: invalid parameters."),
     OK("Content OK."),
     NOT_FOUND("Not found."),
-    CREATED("Resource Created."), FORBIDDEN("Not authorised.");
+    CREATED("Resource Created."),
+    FORBIDDEN("Not authorised."),
+    UNAUTHORIZED("Not authenticated.");
 
     private String message;
 
