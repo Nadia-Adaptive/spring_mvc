@@ -26,7 +26,7 @@ public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
     }
 
-    @ExceptionHandler(value = {BusinessException.class})
+    @ExceptionHandler(value = {BusinessException.class, IllegalArgumentException.class})
     protected ResponseEntity<Object> handleBadRequestException(RuntimeException ex, WebRequest request) {
         return handleExceptionInternal(ex, createJSONMessage(ErrorMessage.BAD_REQUEST), headers,
                 HttpStatus.BAD_REQUEST, request);

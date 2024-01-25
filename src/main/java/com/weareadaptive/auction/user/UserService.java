@@ -1,5 +1,6 @@
 package com.weareadaptive.auction.user;
 
+import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,17 @@ public class UserService {
         }
 
         user.update(password, firstName, lastName, organisation);
+        return user;
+    }
+
+    public User updateUserStatus(final int id, final AccessStatus status) {
+        final var user = userRepository.getUserById(id);
+
+        if (user == null) {
+          throw new NotFoundException("User does not exist.");
+        }
+
+        user.setAccessStatus(status);
         return user;
     }
 

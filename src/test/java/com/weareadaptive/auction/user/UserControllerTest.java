@@ -2,6 +2,7 @@ package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.TestData;
+import com.weareadaptive.auction.model.AccessStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import static com.weareadaptive.auction.TestData.ADMIN_AUTH_TOKEN;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -85,7 +87,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void getUser_RoleIsUser_ReturnsMessageAnd403() {
+    public void AccessUserRoute_RoleIsUser_ReturnsMessageAnd403() {
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, testData.user1Token())
@@ -95,7 +97,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void postUser_createUserWithValidInputs_ReturnsMessageAnd200() {
+    public void postUser_createUserWithValidInputs_ReturnsMessageAnd201() {
         final String userInput = """
                 {   "username": "test03", "firstName": "test03",
                 "lastName": "test03", "password": "invalid",
@@ -129,7 +131,7 @@ class UserControllerTest {
     }
 
     @Test()
-    public void putUser_updateUserWithValidInputs_ReturnsMessageAnd200() {
+    public void PutUser_UpdateUserWithValidInputs_ReturnsMessageAnd200() {
         final String input = """
                 { "organisation": "organisation 123" }""";
         given()
@@ -142,5 +144,59 @@ class UserControllerTest {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("message", equalTo(ErrorMessage.OK.getMessage()));
+    }
+
+    @Test()
+    public void PutUser_AttemptUpdateNonExistentUser_ReturnsMessageAnd404() {
+        final String input = """
+                { "organisation": "organisation 123" }""";
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(input)
+                .put("-1")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message", equalTo(ErrorMessage.NOT_FOUND.getMessage()));
+    }
+
+    @Test()
+    public void PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd200() {
+        final String input = """
+                { "accessStatus": "BLOCKED" }""";
+        final var user = new User(30, "test02", "password", "test", "test", "org1", UserRole.USER);
+        state.add(user);
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(input)
+                .put("30/status")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("message", equalTo(ErrorMessage.OK.getMessage()));
+        assertEquals(AccessStatus.BLOCKED, user.getAccessStatus());
+    }
+
+    @Test()
+    public void PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd400() {
+        final String input = """
+                { "accessStatus": "BLOC" }""";
+        final var user = new User(31, "test22", "password", "test", "test", "org1", UserRole.USER);
+        state.add(user);
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(input)
+                .put("31/status")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo(ErrorMessage.BAD_REQUEST.getMessage()));
+        assertEquals(AccessStatus.ALLOWED, user.getAccessStatus());
     }
 }

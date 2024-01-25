@@ -3,6 +3,7 @@ package com.weareadaptive.auction.user;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.ResponseError;
+import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.model.BusinessException;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -41,15 +42,11 @@ public class UserController {
 
     @PostMapping(value = "/")
     public ResponseEntity createUser(@RequestBody final HashMap<String, String> body) {
-        try {
-            userService.createUser(body.get("username"), body.get("password"), body.get("firstName"),
-                    body.get("lastName"), body.get("organisation"), UserRole.valueOf(body.get("userRole")));
+        userService.createUser(body.get("username"), body.get("password"), body.get("firstName"),
+                body.get("lastName"), body.get("organisation"), UserRole.valueOf(body.get("userRole")));
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ResponseError(ErrorMessage.CREATED.getMessage())); // TODO: Refactor response messages
-        } catch (final IllegalArgumentException ex) {
-            throw new BusinessException("Invalid role");
-        }
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseError(ErrorMessage.CREATED.getMessage())); // TODO: Refactor response messages
     }
 
     @PutMapping(value = "/{id}")
@@ -57,6 +54,13 @@ public class UserController {
         userService.updateUser(id, body.get("password"), body.get("firstName"),
                 body.get("lastName"), body.get("organisation"));
 
+        return ResponseEntity.ok().body(new ResponseError(ErrorMessage.OK.getMessage()));
+    }
+
+    @PutMapping(value = "/{id}/status")
+    public ResponseEntity updateUserAccessStatus(@PathVariable final int id,
+                                                 @RequestBody final HashMap<String, String> body) {
+        userService.updateUserStatus(id, AccessStatus.valueOf(body.get("accessStatus")));
         return ResponseEntity.ok().body(new ResponseError(ErrorMessage.OK.getMessage()));
     }
 }
