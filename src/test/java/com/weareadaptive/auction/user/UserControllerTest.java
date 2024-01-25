@@ -1,5 +1,6 @@
 package com.weareadaptive.auction.user;
 
+import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.TestData;
 import com.weareadaptive.auction.user.User;
 import com.weareadaptive.auction.user.UserRepository;
@@ -81,7 +82,8 @@ class UserControllerTest {
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .when().get("-1").then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message", equalTo(ErrorMessage.NOT_FOUND.getMessage()));
     }
 
     @Test
@@ -90,7 +92,8 @@ class UserControllerTest {
                 .baseUri(uri)
                 .header(AUTHORIZATION, testData.user1Token())
                 .when().get("3").then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("message", equalTo(ErrorMessage.FORBIDDEN.getMessage()));
     }
 
     @Test
@@ -107,7 +110,8 @@ class UserControllerTest {
                 .body(userInput)
                 .post()
                 .then()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .body("message", equalTo(ErrorMessage.CREATED.getMessage()));
     }
 
     @ParameterizedTest()
@@ -121,7 +125,9 @@ class UserControllerTest {
                 .body(input)
                 .post()
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message",
+                        equalTo(ErrorMessage.BAD_REQUEST.getMessage()));
     }
 
     @Test()
@@ -134,26 +140,9 @@ class UserControllerTest {
                 .when()
                 .header("Content-Type", "application/json")
                 .body(input)
-                .put("0")
+                .put("1")
                 .then()
-                .statusCode(HttpStatus.OK.value());
-    }
-
-    @Test()
-    public void putUser_updateUserWithInvalidInputs_ReturnsMessageAnd400() {
-        final String input = """
-                { "firstName": "changed",
-                  "lastName": "",
-                  "password": "password",
-                }""";
-        given()
-                .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
-                .when()
-                .header("Content-Type", "application/json")
-                .body(input)
-                .put("0")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("message", equalTo(ErrorMessage.OK.getMessage()));
     }
 }

@@ -1,6 +1,7 @@
 package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.model.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,15 +28,22 @@ public class UserService {
     }
 
     public User getUser(int id) {
-        return userRepository.getUserById(id);
+        final var user =  userRepository.getUserById(id);
+        if (user == null) {
+            throw new NotFoundException("User does not exist.");
+        }
+        return user;
     }
 
-    public User updateUser(final int id, final String username, final String password, final String firstName,
+    public User updateUser(final int id, final String password, final String firstName,
                            final String lastName, final String organisation) {
         final var user = userRepository.getUserById(id);
-        if (user != null) {
-            user.update(username, password, firstName, lastName, organisation);
+
+        if (user == null) {
+          throw new NotFoundException("User does not exist.");
         }
+
+        user.update(password, firstName, lastName, organisation);
         return user;
     }
 

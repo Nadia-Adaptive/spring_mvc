@@ -1,5 +1,7 @@
 package com.weareadaptive.auction.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -11,11 +13,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
@@ -51,6 +55,7 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
                 .authorizeHttpRequests().requestMatchers(PROTECTED_URLS).authenticated()
@@ -75,4 +80,9 @@ public class SecurityConfiguration {
     AuthenticationEntryPoint forbiddenEntryPoint() {
         return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
     }
+
+    @Bean
+    AccessDeniedHandler accessDeniedHandler(){
+        return new AccessDeniedResponseHandler();
+    };
 }

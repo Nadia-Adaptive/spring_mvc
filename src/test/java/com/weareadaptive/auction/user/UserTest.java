@@ -71,9 +71,9 @@ public class UserTest {
         final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
         final var testName = "Test user01";
 
-        user.update(testName, "", "", "", "");
+        user.update("", testName, "", "");
 
-        assertTrue(user.getUsername().equals(testName));
+        assertTrue(user.getFirstName().equals(testName));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class UserTest {
     public void shouldNotModifyUserWithNewFieldsIfTheFieldsAreEmpty() {
         final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
 
-        user.update("", "", "", "", "");
+        user.update("", "", "", "");
 
         assertTrue(user.getUsername().equals("test"));
     }

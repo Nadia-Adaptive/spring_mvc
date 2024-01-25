@@ -10,7 +10,7 @@ import static utils.StringUtil.isNullOrEmpty;
 
 public class User implements Entity {
     private final int id;
-    private String username;
+    private final String username;
     private String password;
     private final UserRole userRole;
     private String firstName;
@@ -110,9 +110,8 @@ public class User implements Entity {
         return Objects.hash(getId(), getUsername());
     }
 
-    public void update(final String username, final String password, final String firstName, final String lastName,
+    public void update(final String password, final String firstName, final String lastName,
                        final String organisation) {
-        this.username = isNullOrEmpty(username) ? this.username : username;
         this.password = isNullOrEmpty(password) ? this.password : password;
         this.firstName = isNullOrEmpty(firstName) ? this.firstName : firstName;
         this.lastName = isNullOrEmpty(lastName) ? this.lastName : lastName;
