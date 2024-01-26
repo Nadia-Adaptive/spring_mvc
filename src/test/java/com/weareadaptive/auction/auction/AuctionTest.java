@@ -1,8 +1,6 @@
-package com.weareadaptive.auction.model.service;
+package com.weareadaptive.auction.auction;
 
-import com.weareadaptive.auction.model.Auction;
-import com.weareadaptive.auction.model.AuctionStatus;
-import com.weareadaptive.auction.model.Bid;
+import com.weareadaptive.auction.bid.Bid;
 import com.weareadaptive.auction.model.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

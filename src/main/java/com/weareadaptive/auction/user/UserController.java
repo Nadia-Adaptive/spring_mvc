@@ -2,8 +2,6 @@ package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.ResponseError;
-import com.weareadaptive.auction.model.AccessStatus;
-import com.weareadaptive.auction.organisation.OrganisationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

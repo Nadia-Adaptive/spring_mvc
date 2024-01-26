@@ -1,5 +1,6 @@
-import com.weareadaptive.auction.model.AuctionState;
-import com.weareadaptive.auction.model.Bid;
+package com.weareadaptive.auction.auction;
+
+import com.weareadaptive.auction.bid.Bid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

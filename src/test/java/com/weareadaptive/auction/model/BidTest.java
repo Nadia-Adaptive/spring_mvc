@@ -1,5 +1,5 @@
-import com.weareadaptive.auction.model.Bid;
-import com.weareadaptive.auction.model.BidFillStatus;
+import com.weareadaptive.auction.bid.Bid;
+import com.weareadaptive.auction.bid.BidFillStatus;
 import com.weareadaptive.auction.model.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

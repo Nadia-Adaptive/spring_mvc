@@ -2,7 +2,6 @@ package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.ControllerTestData;
 import com.weareadaptive.auction.ErrorMessage;
-import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.organisation.OrganisationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
 
 import static com.weareadaptive.auction.TestData.ORGANISATION1;
-import static com.weareadaptive.auction.TestData.ORGANISATION2;
 import static com.weareadaptive.auction.TestData.ORGANISATION3;
 import static com.weareadaptive.auction.TestData.ORG_1;
 import static io.restassured.RestAssured.given;

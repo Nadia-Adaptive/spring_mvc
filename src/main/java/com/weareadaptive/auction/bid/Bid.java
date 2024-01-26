@@ -1,5 +1,6 @@
-package com.weareadaptive.auction.model;
+package com.weareadaptive.auction.bid;
 
+import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.user.User;
 
 import java.time.Instant;

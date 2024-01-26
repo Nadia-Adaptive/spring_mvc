@@ -1,6 +1,5 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.Entity;
 import com.weareadaptive.auction.organisation.Organisation;

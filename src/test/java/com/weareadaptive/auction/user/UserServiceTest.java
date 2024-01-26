@@ -1,6 +1,5 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.NotFoundException;
 import com.weareadaptive.auction.organisation.OrganisationRepository;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.weareadaptive.auction.TestData.ADMIN;
-import static com.weareadaptive.auction.TestData.ORGANISATION1;
 import static com.weareadaptive.auction.TestData.ORG_1;
 import static com.weareadaptive.auction.TestData.ORG_2;
 import static com.weareadaptive.auction.TestData.USER1;

@@ -1,8 +1,8 @@
-package com.weareadaptive.auction.model;
+package com.weareadaptive.auction.auction;
 
+import com.weareadaptive.auction.model.State;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 @Component

@@ -1,6 +1,6 @@
 package com.weareadaptive.auction;
 
-import com.weareadaptive.auction.model.Auction;
+import com.weareadaptive.auction.auction.Auction;
 import com.weareadaptive.auction.organisation.Organisation;
 import com.weareadaptive.auction.user.User;
 import com.weareadaptive.auction.user.UserRole;
