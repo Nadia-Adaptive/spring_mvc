@@ -3,6 +3,7 @@ package com.weareadaptive.auction.user;
 import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.Entity;
+import com.weareadaptive.auction.organisation.Organisation;
 
 import java.util.Objects;
 
@@ -15,13 +16,13 @@ public class User implements Entity {
     private final UserRole userRole;
     private String firstName;
     private String lastName;
-    private String organisation;
+    private Organisation organisation;
     private String phone;
     private String email;
     private AccessStatus accessStatus;
 
     public User(final int id, final String username, final String password, final String firstName,
-                final String lastName, final String organisation, final UserRole userRole) {
+                final String lastName, final Organisation organisation, final UserRole userRole) {
         if (isNullOrEmpty(username)) {
             throw new BusinessException("username cannot be null or empty");
         }
@@ -34,11 +35,11 @@ public class User implements Entity {
         if (isNullOrEmpty(lastName)) {
             throw new BusinessException("lastName cannot be null or empty");
         }
-        if (isNullOrEmpty(organisation)) {
-            throw new BusinessException("organisation cannot be null or empty");
+        if (organisation == null) {
+            throw new BusinessException("organisation cannot be null");
         }
         if (userRole == null) {
-            throw new BusinessException("organisation cannot be null");
+            throw new BusinessException("User Role cannot be null");
         }
 
         this.id = id;
@@ -76,8 +77,8 @@ public class User implements Entity {
         return id;
     }
 
-    public String getOrganisation() {
-        return organisation;
+    public String getOrganisationName() {
+        return organisation.organisationName();
     }
 
     public UserRole getUserRole() {
@@ -111,10 +112,10 @@ public class User implements Entity {
     }
 
     public void update(final String password, final String firstName, final String lastName,
-                       final String organisation) {
+                       final Organisation organisation) {
         this.password = isNullOrEmpty(password) ? this.password : password;
         this.firstName = isNullOrEmpty(firstName) ? this.firstName : firstName;
         this.lastName = isNullOrEmpty(lastName) ? this.lastName : lastName;
-        this.organisation = isNullOrEmpty(organisation) ? this.organisation : organisation;
+        this.organisation = organisation == null ? this.organisation : organisation;
     }
 }

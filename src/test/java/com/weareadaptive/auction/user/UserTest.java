@@ -2,6 +2,7 @@ package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.model.AccessStatus;
 import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.organisation.Organisation;
 import com.weareadaptive.auction.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.weareadaptive.auction.TestData.ORGANISATION1;
+import static com.weareadaptive.auction.TestData.ORGANISATION2;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,15 +25,15 @@ public class UserTest {
     private static Stream<Arguments> createUserArguments() {
         return Stream.of(
                 Arguments.of("username",
-                        (Executable) () -> new User(1, null, "pp", "first", "last", "Org", UserRole.USER)),
+                        (Executable) () -> new User(1, null, "pp", "first", "last",  ORGANISATION1, UserRole.USER)),
                 Arguments.of("firstName",
-                        (Executable) () -> new User(1, "username", "pp", null, "last", "Org", UserRole.USER)),
+                        (Executable) () -> new User(1, "username", "pp", null, "last", ORGANISATION1, UserRole.USER)),
                 Arguments.of("lastName",
-                        (Executable) () -> new User(1, "username", "pp", "first", null, "Org", UserRole.USER)),
+                        (Executable) () -> new User(1, "username", "pp", "first", null, ORGANISATION1, UserRole.USER)),
                 Arguments.of("organisation",
                         (Executable) () -> new User(1, "username", "pp", "first", "last", null, UserRole.USER)),
                 Arguments.of("password",
-                        (Executable) () -> new User(1, "username", null, "first", "last", "Org", UserRole.USER))
+                        (Executable) () -> new User(1, "username", null, "first", "last",  ORGANISATION1, UserRole.USER))
         );
     }
 
@@ -48,7 +51,7 @@ public class UserTest {
     @Test
     @DisplayName("ValidatePassword should return false when the password is not valid")
     public void shouldReturnFalseWhenThePasswordIsNotValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
 
         final var result = user.validatePassword("bad");
 
@@ -58,7 +61,7 @@ public class UserTest {
     @Test
     @DisplayName("ValidatePassword should return true when the password is valid")
     public void shouldReturnTrueWhenThePasswordIsValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe",  ORGANISATION1, UserRole.USER);
 
         final var result = user.validatePassword("thepassword");
 
@@ -66,22 +69,21 @@ public class UserTest {
     }
 
     @Test
-    @DisplayName("update should modify the user's details with the new values")
-    public void shouldModifyUserWithNewFields() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
+    public void Update_NotEmptyUserFields_UserFieldsUpdated() {
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe",  ORGANISATION1, UserRole.USER);
         final var testName = "Test user01";
 
-        user.update("", testName, "", "");
+        user.update("", testName, "", ORGANISATION2);
 
-        assertTrue(user.getFirstName().equals(testName));
+        assertEquals(testName, user.getFirstName());
+        assertEquals(ORGANISATION2.organisationName(), user.getOrganisationName());
     }
 
     @Test
-    @DisplayName("update should not modify the user's details with the new values if values are empty")
-    public void shouldNotModifyUserWithNewFieldsIfTheFieldsAreEmpty() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", "Adaptive", UserRole.USER);
+    public void Update_EmptyUserFields_UserFieldsNotUpdated() {
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
 
-        user.update("", "", "", "");
+        user.update("", "", "", null);
 
         assertTrue(user.getUsername().equals("test"));
     }
@@ -89,7 +91,7 @@ public class UserTest {
     @Test
     @DisplayName("a new user's default access status should be allowed")
     public void userDefaultStatusIsAllowed() {
-        final var user = new User(1, "test", "thepassword", "John", "Doe", "Adaptive", UserRole.USER);
+        final var user = new User(1, "test", "thepassword", "John", "Doe", ORGANISATION1, UserRole.USER);
 
         Assertions.assertEquals(AccessStatus.ALLOWED, user.getAccessStatus());
     }

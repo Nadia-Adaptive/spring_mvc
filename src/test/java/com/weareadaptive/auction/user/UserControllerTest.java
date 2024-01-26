@@ -1,8 +1,9 @@
 package com.weareadaptive.auction.user;
 
+import com.weareadaptive.auction.ControllerTestData;
 import com.weareadaptive.auction.ErrorMessage;
-import com.weareadaptive.auction.TestData;
 import com.weareadaptive.auction.model.AccessStatus;
+import com.weareadaptive.auction.organisation.OrganisationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +15,12 @@ import org.springframework.http.HttpStatus;
 
 import java.util.stream.Stream;
 
-import static com.weareadaptive.auction.TestData.ADMIN_AUTH_TOKEN;
+import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
+
+import static com.weareadaptive.auction.TestData.ORGANISATION1;
+import static com.weareadaptive.auction.TestData.ORGANISATION2;
+import static com.weareadaptive.auction.TestData.ORGANISATION3;
+import static com.weareadaptive.auction.TestData.ORG_1;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,10 +29,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
     @Autowired
-    UserRepository state;
+    UserRepository repository;
 
     @Autowired
-    TestData testData;
+    OrganisationService organisationService;
+
+    @Autowired
+    ControllerTestData testData;
 
     @LocalServerPort
     private int port;
@@ -50,7 +59,10 @@ class UserControllerTest {
                          "password":"password", "organisation":"Organisation 1", "userRole": "USER"  }""",
                 """
                         { "username":"test_03", "firstName":"test03", "lastName":"test03",
-                         "password":"password", "organisation":"Organisation 1", "userRole": ""  }""");
+                         "password":"password", "organisation":"Organisation 1", "userRole": ""  }""",
+                """
+                        { "username":"admin_02", "firstName":"admin2", "lastName":"admin2",
+                         "password":"password", "organisation":"Organisation 1", "userRole": "ADMIN"  }""");
     }
 
     @BeforeEach
@@ -60,9 +72,9 @@ class UserControllerTest {
 
     @Test
     public void getUser_UserExistsAndRoleIsAdmin_ReturnsUserAnd200() {
-        final var id = state.nextId();
-        final var user = new User(id, "test01", "password", "test", "test", "org1", UserRole.USER);
-        state.add(user);
+        final var id = repository.nextId();
+        final var user = new User(id, "test01", "password", "test", "test", ORGANISATION1, UserRole.USER);
+        repository.add(user);
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
@@ -72,7 +84,7 @@ class UserControllerTest {
                 .body(
                         "id", equalTo(id), "username", equalTo("test01"),
                         "firstName", equalTo("test"), "lastName", equalTo("test"),
-                        "organisation", equalTo("org1"), "accessStatus", equalTo("ALLOWED"), "userRole",
+                        "organisationName", equalTo(ORG_1), "accessStatus", equalTo("ALLOWED"), "userRole",
                         equalTo("USER"));
     }
 
@@ -101,7 +113,43 @@ class UserControllerTest {
         final String userInput = """
                 {   "username": "test03", "firstName": "test03",
                 "lastName": "test03", "password": "invalid",
+                "organisationName": "Organisation 1", "userRole": "USER" }""";
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(userInput)
+                .post()
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("message", equalTo(ErrorMessage.CREATED.getMessage()));
+    }
+
+    @Test
+    public void PostUser_createAdminWithValidInputs_ReturnsMessageAnd201() {
+        final String userInput = """
+                {   "username": "test05", "firstName": "test03",
+                "lastName": "test03", "password": "invalid",
                 "organisation": "Organisation 1", "userRole": "USER" }""";
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .when()
+                .header("Content-Type", "application/json")
+                .body(userInput)
+                .post()
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("message", equalTo(ErrorMessage.CREATED.getMessage()));
+    }
+
+    @Test
+    public void PostUser_UserInputIsValid_UserIsAddedToOrganisation() {
+        final String userInput = """
+                {   "username": "test04", "firstName": "test03",
+                "lastName": "test03", "password": "valid",
+                "organisationName": "Organisation 1", "userRole": "USER" }""";
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
@@ -116,7 +164,7 @@ class UserControllerTest {
 
     @ParameterizedTest()
     @MethodSource("invalidInput")
-    public void postUser_createUserWithInvalidInputs_ReturnsMessageAnd400(final String input) {
+    public void PostUser_createUserWithInvalidInputs_ReturnsMessageAnd400(final String input) {
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
@@ -133,7 +181,7 @@ class UserControllerTest {
     @Test()
     public void PutUser_UpdateUserWithValidInputs_ReturnsMessageAnd200() {
         final String input = """
-                { "organisation": "organisation 123" }""";
+                { "organisationName": "%s" }""".formatted(ORGANISATION3.organisationName());
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
@@ -166,8 +214,8 @@ class UserControllerTest {
     public void PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd200() {
         final String input = """
                 { "accessStatus": "BLOCKED" }""";
-        final var user = new User(30, "test02", "password", "test", "test", "org1", UserRole.USER);
-        state.add(user);
+        final var user = new User(30, "test02", "password", "test", "test", ORGANISATION1, UserRole.USER);
+        repository.add(user);
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
@@ -185,8 +233,8 @@ class UserControllerTest {
     public void PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd400() {
         final String input = """
                 { "accessStatus": "BLOC" }""";
-        final var user = new User(31, "test22", "password", "test", "test", "org1", UserRole.USER);
-        state.add(user);
+        final var user = new User(31, "test22", "password", "test", "test", ORGANISATION1, UserRole.USER);
+        repository.add(user);
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)

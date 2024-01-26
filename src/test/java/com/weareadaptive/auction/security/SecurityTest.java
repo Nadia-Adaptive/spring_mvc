@@ -1,10 +1,11 @@
 package com.weareadaptive.auction.security;
 
-import static com.weareadaptive.auction.TestData.ADMIN_AUTH_TOKEN;
+import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import com.weareadaptive.auction.ControllerTestData;
 import com.weareadaptive.auction.ErrorMessage;
 import com.weareadaptive.auction.TestData;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ import org.springframework.http.HttpStatus;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SecurityTest {
     @Autowired
-    private TestData testData;
+    private ControllerTestData testData;
     @LocalServerPort
     private int port;
     private String uri;
