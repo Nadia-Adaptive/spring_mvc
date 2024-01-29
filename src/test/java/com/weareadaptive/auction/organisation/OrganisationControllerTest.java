@@ -36,7 +36,7 @@ class OrganisationControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        uri = "http://localhost:" + port + "/organisations/";
+        uri = "http://localhost:" + port + "/api/v1/organisations/";
     }
 
     @Test
@@ -48,7 +48,7 @@ class OrganisationControllerTest {
                 .get()
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", hasItems(3, 2, 4),
+                .body("id", hasItems(3, 2, 1),
                         "organisationName", hasItems("ADMIN", ORG_1, ORG_3));
 
     }
@@ -65,7 +65,7 @@ class OrganisationControllerTest {
                 .body("id", equalTo(1),
                         "organisationName", equalTo(ORG_1),
                         "users", hasItems(
-                                hasEntry("user01", USER1.getUsername()),
+                                hasEntry("username", "user01"),
                                 hasEntry("organisationName", ORG_1))
                 );
     }

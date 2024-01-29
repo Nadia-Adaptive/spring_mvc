@@ -27,7 +27,7 @@ public class OrganisationRepositoryTest {
 
     @Test
     public void GetOrganisation_IdExists_ReturnsOrganisation() {
-        final var organisation = repository.getOrganisation(0);
+        final var organisation = repository.getOrganisation(10);
         assertEquals(ORGANISATION1, organisation);
     }
 
@@ -70,7 +70,7 @@ public class OrganisationRepositoryTest {
 
     @Test
     public void GetOrganisation_OrganisationExists_ReturnsOrganisations() {
-        final var organisation = repository.getOrganisation(0);
+        final var organisation = repository.getOrganisation(10);
         assertEquals(ORGANISATION1, organisation);
     }
 

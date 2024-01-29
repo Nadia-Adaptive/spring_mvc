@@ -45,6 +45,10 @@ public class OrganisationService {
     }
 
     public Organisation addOrganisation(final String organisationName) {
+        final var existingOrganisation = repository.getOrganisationByName(organisationName);
+        if(existingOrganisation !=null){
+            return existingOrganisation;
+        }
         try {
             final var organisation = new Organisation(repository.nextId(), organisationName, new ArrayList<>());
             repository.add(organisation);

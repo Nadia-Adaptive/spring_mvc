@@ -23,10 +23,8 @@ public class SecurityConfiguration {
     private final AuthenticationConfiguration authenticationConfiguration;
 
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
-            new AntPathRequestMatcher("/**")
+            new AntPathRequestMatcher("/api/v1/**")
     );
-
-    AuthenticationProvider provider;
 
     public SecurityConfiguration(final AuthenticationConfiguration authenticationConfiguration) {
         super();
@@ -53,11 +51,13 @@ public class SecurityConfiguration {
                 .and()
                 .addFilterBefore(authenticationFilter(), AnonymousAuthenticationFilter.class)
                 .authorizeHttpRequests().requestMatchers(PROTECTED_URLS).authenticated()
+                .requestMatchers("/auth/login").permitAll()
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .logout().disable();
+                .logout().disable()
+                .cors();
 
         return http.build();
     }

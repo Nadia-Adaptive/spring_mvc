@@ -15,7 +15,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    '@typescript-eslint/class-name-casing': 'warn',
+    //'@typescript-eslint/class-name-casing': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
   },

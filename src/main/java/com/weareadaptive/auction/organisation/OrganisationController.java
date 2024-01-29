@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-@RequestMapping("/organisations")
+@RequestMapping("/api/v1/organisations")
 public class OrganisationController {
     private final OrganisationService service;
 

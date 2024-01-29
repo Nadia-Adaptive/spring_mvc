@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.ControllerTestData;
-import com.weareadaptive.auction.ErrorMessage;
+import com.weareadaptive.auction.ResponseStatus;
 import com.weareadaptive.auction.organisation.OrganisationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class UserControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        uri = "http://localhost:" + port + "/users/";
+        uri = "http://localhost:" + port + "/api/v1/users/";
     }
 
     @Test
@@ -93,7 +93,7 @@ class UserControllerTest {
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .when().get("-1").then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
-                .body("message", equalTo(ErrorMessage.NOT_FOUND.getMessage()));
+                .body("message", equalTo(ResponseStatus.NOT_FOUND.getMessage()));
     }
 
     @Test
@@ -103,7 +103,7 @@ class UserControllerTest {
                 .header(AUTHORIZATION, testData.user1Token())
                 .when().get("3").then()
                 .statusCode(HttpStatus.FORBIDDEN.value())
-                .body("message", equalTo(ErrorMessage.FORBIDDEN.getMessage()));
+                .body("message", equalTo(ResponseStatus.FORBIDDEN.getMessage()));
     }
 
     @Test
@@ -115,13 +115,13 @@ class UserControllerTest {
         given()
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
-                .when()
                 .header("Content-Type", "application/json")
+        .when()
                 .body(userInput)
                 .post()
-                .then()
+        .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("message", equalTo(ErrorMessage.CREATED.getMessage()));
+                .body("message", equalTo(ResponseStatus.CREATED.getMessage()));
     }
 
     @Test
@@ -139,7 +139,7 @@ class UserControllerTest {
                 .post()
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("message", equalTo(ErrorMessage.CREATED.getMessage()));
+                .body("message", equalTo(ResponseStatus.CREATED.getMessage()));
     }
 
     @Test
@@ -157,7 +157,7 @@ class UserControllerTest {
                 .post()
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("message", equalTo(ErrorMessage.CREATED.getMessage()));
+                .body("message", equalTo(ResponseStatus.CREATED.getMessage()));
     }
 
     @ParameterizedTest()
@@ -173,7 +173,7 @@ class UserControllerTest {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message",
-                        equalTo(ErrorMessage.BAD_REQUEST.getMessage()));
+                        equalTo(ResponseStatus.BAD_REQUEST.getMessage()));
     }
 
     @Test()
@@ -189,7 +189,7 @@ class UserControllerTest {
                 .put("1")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("message", equalTo(ErrorMessage.OK.getMessage()));
+                .body("message", equalTo(ResponseStatus.OK.getMessage()));
     }
 
     @Test()
@@ -205,7 +205,7 @@ class UserControllerTest {
                 .put("-1")
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
-                .body("message", equalTo(ErrorMessage.NOT_FOUND.getMessage()));
+                .body("message", equalTo(ResponseStatus.NOT_FOUND.getMessage()));
     }
 
     @Test()
@@ -223,7 +223,7 @@ class UserControllerTest {
                 .put("30/status")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("message", equalTo(ErrorMessage.OK.getMessage()));
+                .body("message", equalTo(ResponseStatus.OK.getMessage()));
         assertEquals(AccessStatus.BLOCKED, user.getAccessStatus());
     }
 
@@ -242,7 +242,7 @@ class UserControllerTest {
                 .put("31/status")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", equalTo(ErrorMessage.BAD_REQUEST.getMessage()));
+                .body("message", equalTo(ResponseStatus.BAD_REQUEST.getMessage()));
         assertEquals(AccessStatus.ALLOWED, user.getAccessStatus());
     }
 }

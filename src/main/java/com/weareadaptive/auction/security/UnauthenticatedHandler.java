@@ -1,8 +1,8 @@
 package com.weareadaptive.auction.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weareadaptive.auction.ErrorMessage;
-import com.weareadaptive.auction.ResponseError;
+import com.weareadaptive.auction.ResponseStatus;
+import com.weareadaptive.auction.Response;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ public class UnauthenticatedHandler implements AuthenticationFailureHandler {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         ObjectMapper map = new ObjectMapper();
-        map.writeValue(response.getOutputStream(), new ResponseError(ErrorMessage.UNAUTHORIZED.getMessage()));
+        map.writeValue(response.getOutputStream(), new Response(ResponseStatus.UNAUTHORIZED.getMessage()));
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }

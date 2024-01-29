@@ -36,7 +36,7 @@ export const doApiRequest = async <P, R>({
   const url = `${config.BE_API}/${path}`
   const headers = await getHeaders(token)
 
-  let response = await fetch(url, {
+  const response = await fetch(url, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
@@ -54,8 +54,7 @@ export const doApiRequest = async <P, R>({
 
   // We can get successful responses 200 (OK) and 201 (CREATED)
   if (response.status !== 200 && response.status !== 201) {
-    const errorMessage = `${response.status}: ${(data as Error).message}`
-    throw new Error(errorMessage)
+    throw new Error(data.message)
   }
 
   return data as R

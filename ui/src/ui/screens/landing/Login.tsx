@@ -13,7 +13,7 @@ import { grey } from '@mui/material/colors'
 import { useContext, useState } from 'react'
 import { login } from '../../../service/login.ts'
 import { AuthContext } from '../../AuthProvider.tsx'
-import { SignInState } from '../../../service/types.ts'
+import { SignInResponse, SignInState } from '../../../service/types.ts'
 
 export const Login = () => {
   const { setUser } = useContext(AuthContext)
@@ -21,8 +21,10 @@ export const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [signInState, setSignInState] = useState(SignInState.SIGNED_OUT)
-  const hasError = signInState === SignInState.SIGN_ERROR
+  const [signInState, setSignInState] = useState<SignInResponse>({
+    state: SignInState.SIGNING_IN,
+  })
+  const hasError = signInState.state === SignInState.SIGN_ERROR
 
   const onSubmit = async () => {
     if (!username || !password) {
@@ -30,13 +32,16 @@ export const Login = () => {
       return
     }
 
-    setSignInState(SignInState.SIGNING_IN)
+    setSignInState({ state: SignInState.SIGNING_IN })
 
     try {
       const user = await login(username, password)
       setUser(user)
     } catch (e) {
-      setSignInState(SignInState.SIGN_ERROR)
+      setSignInState({
+        state: SignInState.SIGN_ERROR,
+        message: (e as Error).message,
+      })
     }
   }
 
@@ -50,7 +55,7 @@ export const Login = () => {
         boxShadow: '4px 4px 3px #616161\n',
       }}
       margin="auto"
-      width="20%"
+      width="50%"
       padding={2}
       spacing={1}
     >
@@ -103,7 +108,7 @@ export const Login = () => {
             sx={{ marginTop: 4, marginBottom: 4 }}
             onClick={onSubmit}
           >
-            {signInState === SignInState.SIGNING_IN ? (
+            {signInState.state === SignInState.SIGNING_IN ? (
               <CircularProgress />
             ) : (
               'Log in'
@@ -115,7 +120,7 @@ export const Login = () => {
       {hasError && (
         <Grid item xs={12}>
           <Typography variant="body1" color={'red'}>
-            Error logging in
+            {signInState.message}
           </Typography>
         </Grid>
       )}

@@ -6,10 +6,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.weareadaptive.auction.ControllerTestData;
-import com.weareadaptive.auction.ErrorMessage;
-import com.weareadaptive.auction.TestData;
+import com.weareadaptive.auction.ResponseStatus;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +24,7 @@ public class SecurityTest {
 
     @BeforeEach
     public void initialiseRestAssuredMockMvcStandalone() {
-        uri = "http://localhost:" + port;
+        uri = "http://localhost:" + port + "/api/v1";
     }
 
     @Test
@@ -38,7 +36,7 @@ public class SecurityTest {
                 .get("/test")
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .body("message", equalTo(ErrorMessage.UNAUTHORIZED.getMessage()));
+                .body("message", equalTo(ResponseStatus.UNAUTHORIZED.getMessage()));
         //@formatter:on
     }
 
@@ -80,7 +78,7 @@ public class SecurityTest {
                 .get("/test/adminOnly")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value())
-                .body("message", equalTo(ErrorMessage.FORBIDDEN.getMessage()));
+                .body("message", equalTo(ResponseStatus.FORBIDDEN.getMessage()));
         //@formatter:on
     }
 }

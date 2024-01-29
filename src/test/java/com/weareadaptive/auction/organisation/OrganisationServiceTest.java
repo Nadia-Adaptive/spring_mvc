@@ -57,7 +57,7 @@ public class OrganisationServiceTest {
 
     @Test
     void GetOrganisation_OrganisationExists_ReturnsOrganisation() {
-        final var organisation = service.get(0);
+        final var organisation = service.get(10);
         assertEquals(ORGANISATION1, organisation);
     }
 
