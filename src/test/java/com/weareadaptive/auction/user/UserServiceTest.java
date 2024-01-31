@@ -12,7 +12,6 @@ import static com.weareadaptive.auction.TestData.ORGANISATION2;
 import static com.weareadaptive.auction.TestData.ORG_1;
 import static com.weareadaptive.auction.TestData.ORG_2;
 import static com.weareadaptive.auction.TestData.USER1;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -36,28 +35,20 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("getUser should return a user when passed a valid id")
-    public void GetUser_PassedValidId_ReturnUser() {
+    public void getUser() {
         final var user = userService.getUser(0);
         assertEquals(USER1, user);
     }
 
     @Test
     @DisplayName("getUser should throw a BusinessException when passed an invalid id")
-    public void GetUser_PassedInvalidId_ReturnUser() {
+    public void getUserPassedInvalidId() {
         assertThrows(NotFoundException.class, () -> userService.getUser(-1));
     }
 
     @Test()
-    @DisplayName("createUser should throws a business exception when passed invalid username")
-    public void CreateUser_PassedValidInputs_DoesNotThrow() {
-        assertDoesNotThrow(
-                () -> userService.createUser("username", "password", "firstName", "lastName", ORG_1,
-                        UserRole.USER));
-    }
-
-    @Test()
-    @DisplayName("createUser should throws a business exception when passed invalid username")
-    public void CreateUser_PassedValidInputs_AddsUserToOrganisation() {
+    @DisplayName("createUser should create a user when passed valid parameters")
+    public void createUser() {
         final var user = userService.createUser("username", "password", "firstName", "lastName", ORG_1,
                 UserRole.USER);
 
@@ -66,7 +57,7 @@ public class UserServiceTest {
 
     @Test()
     @DisplayName("createUser should throws a business exception when passed invalid username")
-    public void CreateUser_PassedInvalidUsername_ThrowsBusinessException() {
+    public void createUserPassedInvalidUsername() {
         assertThrows(BusinessException.class,
                 () -> userService.createUser("user_name", "password", "firstName", "lastName", "organisation",
                         UserRole.USER));
@@ -74,7 +65,7 @@ public class UserServiceTest {
 
     @Test()
     @DisplayName("update should return a user when passed valid input")
-    public void UpdateUser_PassedValidInput_ReturnsUser() {
+    public void updateUser() {
         when(organisationRepo.getOrganisationByName(ORG_2)).thenReturn(ORGANISATION2);
         final var user = userService.updateUser(0, "", "Hi", "test", ORG_2);
         assertEquals(ORGANISATION2, organisationRepo.getOrganisationByName(user.getOrganisationName()));
@@ -82,21 +73,21 @@ public class UserServiceTest {
 
     @Test()
     @DisplayName("update should throws a business exception when passed invalid username")
-    public void UpdateUser_PassedInvalidUsername_ThrowsNotFoundException() {
+    public void updateUserPassedInvalidUsername() {
         assertThrows(NotFoundException.class,
                 () -> userService.updateUser(-1, "password", "firstName", "lastName", "organisation"));
     }
 
     @Test()
     @DisplayName("update should throws a business exception when passed invalid username")
-    public void UpdateUserStatus_PassedValidStatus_ReturnsUser() {
+    public void updateUserStatus() {
         final var user = userService.updateUserStatus(0, AccessStatus.BLOCKED);
         assertEquals(AccessStatus.BLOCKED, user.getAccessStatus());
     }
 
     @Test()
     @DisplayName("update should throws a business exception when passed invalid username")
-    public void UpdateUserStatus_PassedInvalidId_ThrowsNotFoundException() {
+    public void updateUserStatusPassedInvalidId() {
         assertThrows(NotFoundException.class,
                 () -> userService.updateUserStatus(-1, AccessStatus.BLOCKED));
     }

@@ -4,6 +4,7 @@ import com.weareadaptive.auction.ControllerTestData;
 import com.weareadaptive.auction.ResponseStatus;
 import com.weareadaptive.auction.organisation.OrganisationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,10 +15,10 @@ import org.springframework.http.HttpStatus;
 
 import java.util.stream.Stream;
 
-import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
+import static com.weareadaptive.auction.ControllerTestData.adminAuthToken;
 import static com.weareadaptive.auction.TestData.ORGANISATION1;
-import static com.weareadaptive.auction.TestData.ORGANISATION3;
 import static com.weareadaptive.auction.TestData.ORG_1;
+import static com.weareadaptive.auction.TestData.ORG_2;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,28 +39,26 @@ class UserControllerTest {
     private int port;
     private String uri;
 
+    private static String username = "test";
+    private static String password = "testPassword";
+
+    private static String generateInput(final String username, final String firstName, final String lastName,
+                                        final String password, final String organisationName, final String userRole) {
+        return """
+                { "username": "%s", "firstName": "%s", "lastName": "%s",
+                "password": "%s", "organisationName": "%s", "userRole": "%s" }""".formatted(username, firstName,
+                lastName, password, organisationName, userRole);
+    }
+
     private static Stream<String> invalidInput() {
-        return Stream.of("""
-                        { "username": "", "firstName": "test03", "lastName": "test03",
-                        "password": "password", "organisation": "Organisation 1", "userRole": "USER" }""",
-                """
-                        { "username": "test03", "firstName": "", "lastName": "test03",
-                            "password": "password", "organisation": "Organisation 1", "userRole": "USER"  }""",
-                """
-                        { "username": "test03", "firstName": "test03", "lastName": null,
-                         "password": "password", "organisation": "Organisation 1", "userRole": "USER" }""",
-                """
-                        {   "username": "test03", "firstName": "test03",
-                            "lastName": "test03", "password": "", "organisation": "Organisation 1", "userRole": "USER" }""",
-                """
-                        { "username":"test_03", "firstName":"test03", "lastName":"test03",
-                         "password":"password", "organisation":"Organisation 1", "userRole": "USER"  }""",
-                """
-                        { "username":"test_03", "firstName":"test03", "lastName":"test03",
-                         "password":"password", "organisation":"Organisation 1", "userRole": ""  }""",
-                """
-                        { "username":"admin_02", "firstName":"admin2", "lastName":"admin2",
-                         "password":"password", "organisation":"Organisation 1", "userRole": "ADMIN"  }""");
+        return Stream.of(
+                generateInput(username, "", username, password, ORG_1, UserRole.USER.name()),
+                generateInput(username, username, "", password, ORG_1, UserRole.USER.name()),
+                generateInput(username, username, username, "", ORG_1, UserRole.USER.name()),
+                generateInput(username, username, username, password, "", UserRole.USER.name()),
+                generateInput(username, username, username, password, ORG_1, "INVALID"),
+                generateInput(username, username, username, password, ORG_1, UserRole.ADMIN.name()),
+                generateInput(username, username, username, password, "ADMIN", UserRole.USER.name()));
     }
 
     @BeforeEach
@@ -68,13 +67,14 @@ class UserControllerTest {
     }
 
     @Test
-    public void getUser_UserExistsAndRoleIsAdmin_ReturnsUserAnd200() {
+    @DisplayName("GetUser_UserExistsAndRoleIsAdmin_ReturnsUserAnd200")
+    public void getUser() {
         final var id = repository.nextId();
         final var user = new User(id, "test01", "password", "test", "test", ORGANISATION1, UserRole.USER);
         repository.add(user);
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .get(String.valueOf(id)).then()
                 .statusCode(HttpStatus.OK.value())
@@ -86,24 +86,23 @@ class UserControllerTest {
     }
 
     @Test
-    public void getUser_UserDoesntExistAndRoleIsAdmin_ReturnsMessageAnd404() {
+    @DisplayName("GetUser_UserDoesntExistAndRoleIsAdmin_ReturnsMessageAnd404")
+    public void getNonExistentUser() {
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when().get("-1").then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("message", equalTo(ResponseStatus.NOT_FOUND.getMessage()));
     }
 
     @Test
-    public void postUser_createUserWithValidInputs_ReturnsMessageAnd201() {
-        final String userInput = """
-                {   "username": "test03", "firstName": "test03",
-                "lastName": "test03", "password": "invalid",
-                "organisationName": "Organisation 1", "userRole": "USER" }""";
+    @DisplayName("PostUser_CreateUserWithValidInputs_ReturnsMessageAnd201")
+    public void postUser() {
+        final String userInput = generateInput("username", username, username, password, ORG_1, UserRole.USER.name());
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .header("Content-Type", "application/json")
                 .when()
                 .body(userInput)
@@ -114,32 +113,13 @@ class UserControllerTest {
     }
 
     @Test
-    public void PostUser_createAdminWithValidInputs_ReturnsMessageAnd201() {
-        final String userInput = """
-                {   "username": "test05", "firstName": "test03",
-                "lastName": "test03", "password": "invalid",
-                "organisation": "Organisation 1", "userRole": "USER" }""";
-        given()
-                .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
-                .when()
-                .header("Content-Type", "application/json")
-                .body(userInput)
-                .post()
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .body("message", equalTo(ResponseStatus.CREATED.getMessage()));
-    }
+    @DisplayName("PostUser_CreateAdminWithValidInputs_ReturnsMessageAnd201")
+    public void postAdmin() {
+        final String userInput = generateInput(username, username, username, password, "ADMIN", UserRole.ADMIN.name());
 
-    @Test
-    public void PostUser_UserInputIsValid_UserIsAddedToOrganisation() {
-        final String userInput = """
-                {   "username": "test04", "firstName": "test03",
-                "lastName": "test03", "password": "valid",
-                "organisationName": "Organisation 1", "userRole": "USER" }""";
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .header("Content-Type", "application/json")
                 .body(userInput)
@@ -150,11 +130,12 @@ class UserControllerTest {
     }
 
     @ParameterizedTest()
+    @DisplayName("PostUser_createUserWithInvalidInputs_ReturnsMessageAnd400")
     @MethodSource("invalidInput")
-    public void PostUser_createUserWithInvalidInputs_ReturnsMessageAnd400(final String input) {
+    public void postUserHandlesInvalidInputs(final String input) {
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .header("Content-Type", "application/json")
                 .body(input)
@@ -166,12 +147,12 @@ class UserControllerTest {
     }
 
     @Test()
-    public void PutUser_UpdateUserWithValidInputs_ReturnsMessageAnd200() {
-        final String input = """
-                { "organisationName": "%s" }""".formatted(ORGANISATION3.organisationName());
+    @DisplayName("PutUser_UpdateUserWithValidInputs_ReturnsMessageAnd200")
+    public void putUser() {
+        final String input = generateInput("", "", "", "", ORG_2, "");
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .header("Content-Type", "application/json")
                 .body(input)
@@ -182,12 +163,13 @@ class UserControllerTest {
     }
 
     @Test()
-    public void PutUser_AttemptUpdateNonExistentUser_ReturnsMessageAnd404() {
-        final String input = """
-                { "organisation": "organisation 123" }""";
+    @DisplayName("PutUser_AttemptUpdateNonExistentUser_ReturnsMessageAnd404")
+    public void putNonExistentUser() {
+        final String input = generateInput(username, username, username, password, ORG_1, UserRole.USER.name());
+
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .header("Content-Type", "application/json")
                 .body(input)
@@ -198,14 +180,14 @@ class UserControllerTest {
     }
 
     @Test()
-    public void PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd200() {
-        final String input = """
-                { "accessStatus": "BLOCKED" }""";
+    @DisplayName("PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd200")
+    public void putUserStatus() {
+        final String input = "{\"accessStatus\": \"BLOCKED\"}";
         final var user = new User(30, "test02", "password", "test", "test", ORGANISATION1, UserRole.USER);
         repository.add(user);
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .header("Content-Type", "application/json")
                 .body(input)
@@ -217,14 +199,14 @@ class UserControllerTest {
     }
 
     @Test()
-    public void PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd400() {
-        final String input = """
-                { "accessStatus": "BLOC" }""";
+    @DisplayName("PutUserStatus_UpdateUserWithValidAccessStatus_ReturnsMessageAnd400")
+    public void putUserStatusWithInvalidAccess() {
+        final String input = "{\"accessStatus\": \"BLOCD\"}";
         final var user = new User(31, "test22", "password", "test", "test", ORGANISATION1, UserRole.USER);
         repository.add(user);
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .header("Content-Type", "application/json")
                 .body(input)

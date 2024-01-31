@@ -17,7 +17,7 @@ import static com.weareadaptive.auction.security.AuthenticationFilter.BEARER;
 
 @Component
 public class ControllerTestData {
-    public static String ADMIN_AUTH_TOKEN;
+    public static String adminAuthToken;
     private final UserService userService;
     private final OrganisationService organisationService;
 
@@ -27,7 +27,7 @@ public class ControllerTestData {
     private User user1;
 
     public ControllerTestData(final UserService userService, final OrganisationService organisationService,
-                              AuthenticationService authenticationService) {
+                              final AuthenticationService authenticationService) {
         this.userService = userService;
         this.organisationService = organisationService;
         this.authenticationService = authenticationService;
@@ -35,7 +35,7 @@ public class ControllerTestData {
 
         userService.createUser("admin", "admin", "admin", "admin", "ADMIN", UserRole.ADMIN);
 
-        ADMIN_AUTH_TOKEN = BEARER + authenticationService.generateJWTToken("admin");
+        adminAuthToken = BEARER + authenticationService.generateJWTToken("admin");
 
         faker = new Faker();
     }

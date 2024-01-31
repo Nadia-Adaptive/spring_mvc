@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
-import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
+import static com.weareadaptive.auction.ControllerTestData.adminAuthToken;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -45,7 +45,7 @@ public class SecurityTest {
         //@formatter:off
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .get("/test")
                 .then()
@@ -59,7 +59,7 @@ public class SecurityTest {
         //@formatter:off
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .get("/test/adminOnly")
                 .then()

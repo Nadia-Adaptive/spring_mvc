@@ -30,40 +30,28 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("findUserByUsername should return a user when passed valid credentials")
-    public void GetUserByUsername_PassedValidUsername_ReturnNewUser() {
+    public void getUserByUsername() {
         final var user = state.getUserByUsername(ADMIN.getUsername());
         assertEquals(ADMIN, user);
     }
 
     @Test
     @DisplayName("findUserByUsername should return null when passed invalid credentials")
-    public void GetUserByUsername_PassedInvalidUsername_ReturnNull() {
+    public void getUserByUsernamePassedInvalidUsername() {
         final var user = state.getUserByUsername("notValid");
         assertEquals(null, user);
     }
 
     @Test
     @DisplayName("add should not throw when passed a valid user object")
-    public void CreateUser_PassedValidCredentials_ReturnNull() {
+    public void createUser() {
         assertDoesNotThrow(() -> state.add(USER1));
     }
 
     @Test
     @DisplayName("add should throw when passed a duplicate user object")
-    public void CreateUser_PassedInvalidCredentials_ReturnNull() {
+    public void createUserPassedInvalidCredentials() {
         state.add(USER2);
         assertThrows(BusinessException.class, () -> state.add(USER2));
     }
-
-//    @Test
-//    @DisplayName("containsUser should return true when user is present in state")
-//    public void shouldReturnTrueWhenUserIsInState() {
-//        assertTrue(state.containsUser("admin"));
-//    }
-//
-//    @Test
-//    @DisplayName("containsUser should return false when user is not present in state")
-//    public void shouldReturnFalseWhenUserIsNotInState() {
-//        assertFalse(state.containsUser("testuser7"));
-//    }
 }

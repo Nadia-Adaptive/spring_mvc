@@ -1,15 +1,17 @@
 package com.weareadaptive.auction.organisation;
 
+import com.weareadaptive.auction.ResponseStatus;
 import com.weareadaptive.auction.TestData;
 import com.weareadaptive.auction.user.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
-import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
+import static com.weareadaptive.auction.ControllerTestData.adminAuthToken;
 import static com.weareadaptive.auction.TestData.ADMIN_ORGANISATION;
 import static com.weareadaptive.auction.TestData.ORG_1;
 import static com.weareadaptive.auction.TestData.ORG_3;
@@ -38,10 +40,11 @@ class OrganisationControllerTest {
     }
 
     @Test
-    void GetAllOrganisations_ReturnsAllOrganisations() {
+    @DisplayName("GetAllOrganisations_ReturnsAllOrganisations")
+    void getAllOrganisations() {
         given().
                 baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .get()
                 .then()
@@ -52,10 +55,11 @@ class OrganisationControllerTest {
     }
 
     @Test
-    void GetOrganisation_ValidId_ReturnsOrganisation() {
+    @DisplayName("GetOrganisation_ValidId_ReturnsOrganisation")
+    void getOrganisation() {
         given()
                 .baseUri(uri)
-                .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
+                .header(AUTHORIZATION, adminAuthToken)
                 .when()
                 .get("1")
                 .then()
@@ -64,5 +68,18 @@ class OrganisationControllerTest {
                         "organisationName", equalTo(ADMIN_ORGANISATION.organisationName()),
                         "users", emptyCollectionOf(User.class)
                 );
+    }
+
+    @Test
+    @DisplayName("GetOrganisation_InvalidId_ReturnsMessage")
+    void getOrganisationInvalidId() {
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, adminAuthToken)
+                .when()
+                .get("-1")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("message", equalTo(ResponseStatus.NOT_FOUND.getMessage()));
     }
 }

@@ -2,6 +2,7 @@ package com.weareadaptive.auction.organisation;
 
 import com.weareadaptive.auction.model.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -28,47 +29,54 @@ public class OrganisationRepositoryTest {
     }
 
     @Test
-    public void GetOrganisation_IdExists_ReturnsOrganisation() {
+    @DisplayName("GetOrganisation_IdExists_ReturnsOrganisation")
+    public void getOrganisation() {
         assertEquals(organisation, repository.getOrganisation(1));
     }
 
     @Test
-    public void GetOrganisation_IdDoesNotExists_ReturnsNull() {
+    @DisplayName("GetOrganisation_IdDoesNotExists_ReturnsNull")
+    public void getOrganisationThatDoesntExist() {
         final var organisation = repository.getOrganisation(-1);
         assertEquals(null, organisation);
     }
 
     @Test
-    public void RemoveUser_UserExists_RemovesUserFromOrganisation() {
-
+    @DisplayName("RemoveUser_UserExists_RemovesUserFromOrganisation")
+    public void removeUser() {
         repository.removeUserFromOrganisation(USER1, ORG_1);
         assertEquals(0, organisation.users().size());
     }
 
     @Test
-    public void RemoveUser_UserDoesNotExist_Throws() {
+    @DisplayName("RemoveUser_UserDoesNotExist_Throws")
+    public void removeUserThatDoesNotExist() {
         assertThrows(NotFoundException.class, () -> repository.removeUserFromOrganisation(USER3, ORG_1));
     }
 
     @Test
-    public void RemoveUser_OldOrganisationDoesNotExist_Throws() {
+    @DisplayName("RemoveUser_OldOrganisationDoesNotExist_Throws")
+    public void removeUserFromOrganisationThatDoesNotExist() {
         assertThrows(NotFoundException.class, () -> repository.removeUserFromOrganisation(USER1, ORG_2));
     }
 
     @Test
-    public void GetOrganisationByName_OrganisationExists_ReturnsOrganisations() {
+    @DisplayName("GetOrganisationByName_OrganisationExists_ReturnsOrganisations")
+    public void getOrganisationByName() {
         final var organisation = repository.getOrganisationByName(ORG_1);
         assertEquals(organisation, organisation);
     }
 
     @Test
-    public void GetOrganisationByName_OldOrganisationDoesNotExist_ReturnsNull() {
+    @DisplayName("GetOrganisationByName_OldOrganisationDoesNotExist_ReturnsNull")
+    public void getOrganisationByNameDoesNotExist() {
         final var organisation = repository.getOrganisationByName("fail");
         assertEquals(null, organisation);
     }
 
     @Test
-    public void GetAllOrganisation_ReturnsOrganisations() {
+    @DisplayName("GetAllOrganisations_ReturnsOrganisations")
+    public void getAllOrganisation() {
         repository.add(ORGANISATION2);
         final var organisations = repository.getAllOrganisations();
         assertEquals(2, organisations.count());

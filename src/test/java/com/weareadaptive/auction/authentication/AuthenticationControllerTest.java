@@ -3,6 +3,7 @@ package com.weareadaptive.auction.authentication;
 import com.weareadaptive.auction.ControllerTestData;
 import com.weareadaptive.auction.ResponseStatus;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -26,7 +27,8 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    public void PostLogin_ValidCredentials_ReturnsToken() {
+    @DisplayName("PostLogin_ValidCredentials_ReturnsToken")
+    public void postLogin() {
         // @formatter:off
         given()
                 .baseUri(uri)
@@ -45,7 +47,8 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    public void PostLogin_InvalidCredentials_ReturnsMessage() {
+    @DisplayName("PostLogin_InvalidCredentials_ReturnsMessage")
+    public void postLoginWithInvalidCredentials() {
         //@formatter:off
         given()
                 .baseUri(uri)

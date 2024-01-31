@@ -36,20 +36,16 @@ public class UserTest {
 
     @ParameterizedTest(name = "Create user should throw when {0} is null")
     @MethodSource("createUserArguments")
-    public void createUserShouldThrowWhenNullProperty(final String propertyName,
-                                                      final Executable userExecutable) {
-        //Act
+    public void createUserShouldThrowWhenNullProperty(final String propertyName, final Executable userExecutable) {
         var exception = assertThrows(BusinessException.class, userExecutable);
 
-        //Assert
         assertTrue(exception.getMessage().contains(propertyName));
     }
 
     @Test
     @DisplayName("ValidatePassword should return false when the password is not valid")
     public void shouldReturnFalseWhenThePasswordIsNotValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
-
+        final var user = new User(1, "test", "password", "John", "Doe", ORGANISATION1, UserRole.USER);
         final var result = user.validatePassword("bad");
 
         assertFalse(result);
@@ -58,16 +54,17 @@ public class UserTest {
     @Test
     @DisplayName("ValidatePassword should return true when the password is valid")
     public void shouldReturnTrueWhenThePasswordIsValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
+        final var user = new User(1, "test", "password", "John", "Doe", ORGANISATION1, UserRole.USER);
 
-        final var result = user.validatePassword("thepassword");
+        final var result = user.validatePassword("password");
 
         assertTrue(result);
     }
 
     @Test
-    public void Update_NotEmptyUserFields_UserFieldsUpdated() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
+    @DisplayName("Update_NotEmptyUserFields_UserFieldsUpdated")
+    public void updateNonEmptyFields() {
+        final var user = new User(1, "test", "password", "John", "Doe", ORGANISATION1, UserRole.USER);
         final var testName = "Test user01";
 
         user.update("", testName, "", ORGANISATION2);
@@ -77,19 +74,19 @@ public class UserTest {
     }
 
     @Test
-    public void Update_EmptyUserFields_UserFieldsNotUpdated() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
+    @DisplayName("Update_EmptyUserFields_UserFieldsNotUpdated")
+    public void updateIgnoresEmptyFields() {
+        final var user = new User(1, "test", "password", "John", "Doe", ORGANISATION1, UserRole.USER);
 
         user.update("", "", "", null);
 
-        assertTrue(user.getUsername().equals("test"));
+        assertEquals("test", user.getUsername());
     }
 
     @Test
     @DisplayName("a new user's default access status should be allowed")
     public void userDefaultStatusIsAllowed() {
-        final var user = new User(1, "test", "thepassword", "John", "Doe", ORGANISATION1, UserRole.USER);
-
+        final var user = new User(1, "test", "password", "John", "Doe", ORGANISATION1, UserRole.USER);
         Assertions.assertEquals(AccessStatus.ALLOWED, user.getAccessStatus());
     }
 }

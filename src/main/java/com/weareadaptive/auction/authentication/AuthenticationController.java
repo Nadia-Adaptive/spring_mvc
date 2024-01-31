@@ -37,7 +37,8 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthToken> login(@RequestBody final HashMap<String, String> body) {
-        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(body.get("username"), body.get("password"));
+        Authentication requestAuthentication =
+                new UsernamePasswordAuthenticationToken(body.get("username"), body.get("password"));
 
         final var auth = authenticationProvider.authenticate(requestAuthentication);
 

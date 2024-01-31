@@ -5,6 +5,7 @@ import com.weareadaptive.auction.user.UserRepository;
 import com.weareadaptive.auction.user.UserRole;
 import com.weareadaptive.auction.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.weareadaptive.auction.TestData.ADMIN_ORGANISATION;
@@ -28,40 +29,47 @@ public class OrganisationServiceTest {
     }
 
     @Test
-    void AddOrganisation_OrganisationDoesNotExist_ReturnsOrganisation() {
+    @DisplayName("AddOrganisation_OrganisationDoesNotExist_ReturnsOrganisation")
+    void addOrganisation() {
         final var organisation = service.addOrganisation("Organisation 48");
         assertEquals(Organisation.class, organisation.getClass());
     }
 
     @Test
-    void AddOrganisation_OrganisationDoesExist_ReturnsExistingOrganisation() {
+    @DisplayName("AddOrganisation_OrganisationDoesExist_ReturnsExistingOrganisation")
+    void addOrganisationThatExists() {
         assertEquals(ORGANISATION1, service.addOrganisation(ORGANISATION1.organisationName()));
     }
 
     @Test
-    void GetOrganisation_OrganisationExists_ReturnsOrganisation() {
+    @DisplayName("GetOrganisation_OrganisationExists_ReturnsOrganisation")
+    void getOrganisation() {
         final var organisation = service.get(10);
         assertEquals(ORGANISATION1, organisation);
     }
 
     @Test
-    void GetOrganisation_OrganisationDoesNotExist_Throws() {
+    @DisplayName("GetOrganisation_OrganisationDoesNotExist_ReturnsOrganisation")
+    void getOrganisationThatDoesNotExist() {
         assertThrows(NotFoundException.class, () -> service.get(-13));
     }
 
     @Test
-    void GetAllOrganisations_ReturnsOrganisations() {
+    @DisplayName("GetAllOrganisations_ReturnsOrganisations")
+    void getAllOrganisations() {
         assertEquals(3, service.getAll().size());
     }
 
     @Test
-    void GetOrganisationByName_OrganisationExists_ReturnsOrganisation() {
+    @DisplayName("GetOrganisationByName_OrganisationExists_ReturnsOrganisation")
+    void getOrganisationByName() {
         final var organisation = service.get(ORG_1);
         assertEquals(ORGANISATION1, organisation);
     }
 
     @Test
-    void GetOrganisationByName_OrganisationDoesNotExist_Throws() {
+    @DisplayName("GetOrganisationByName_OrganisationDoesNotExist_Throws")
+    void getOrganisationByNameThatDoesNotExist() {
         assertThrows(NotFoundException.class, () -> service.get("fail"));
     }
 }
