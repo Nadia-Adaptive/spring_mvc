@@ -3,6 +3,8 @@ package com.weareadaptive.auction.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weareadaptive.auction.ResponseStatus;
 import com.weareadaptive.auction.security.AuthenticationProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +24,7 @@ import java.util.HashMap;
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
     ObjectMapper mapper;
-
+    Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     AuthenticationProvider authenticationProvider;
     AuthenticationService authService;
 
@@ -45,6 +47,8 @@ public class AuthenticationController {
 
         final var token = authService.generateJWTToken(body.get("username"));
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        logger.info("User signed in.");
 
         return ResponseEntity.ok().body(new AuthToken(token));
     }
