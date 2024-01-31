@@ -18,8 +18,8 @@ import java.io.IOException;
 public class AccessDeniedResponseHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(final HttpServletRequest request, final HttpServletResponse response,
+                       final AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         ObjectMapper map = new ObjectMapper();

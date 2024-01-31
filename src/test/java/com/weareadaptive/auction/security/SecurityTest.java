@@ -1,10 +1,5 @@
 package com.weareadaptive.auction.security;
 
-import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 import com.weareadaptive.auction.ControllerTestData;
 import com.weareadaptive.auction.ResponseStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+
+import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SecurityTest {
@@ -32,9 +32,9 @@ public class SecurityTest {
         //@formatter:off
         given()
                 .baseUri(uri)
-                .when()
+         .when()
                 .get("/test")
-                .then()
+         .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .body("message", equalTo(ResponseStatus.UNAUTHORIZED.getMessage()));
         //@formatter:on
@@ -79,6 +79,20 @@ public class SecurityTest {
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value())
                 .body("message", equalTo(ResponseStatus.FORBIDDEN.getMessage()));
+        //@formatter:on
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedWhenProvidedInvalidToken() {
+        //@formatter:off
+        given()
+                .baseUri(uri)
+                .header(AUTHORIZATION, "invalid")
+                .when()
+                .get("/test/adminOnly")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("message", equalTo(ResponseStatus.UNAUTHORIZED.getMessage()));
         //@formatter:on
     }
 }

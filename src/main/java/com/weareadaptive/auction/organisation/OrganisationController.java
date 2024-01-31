@@ -15,7 +15,7 @@ import java.util.List;
 public class OrganisationController {
     private final OrganisationService service;
 
-    public OrganisationController(OrganisationService service) {
+    public OrganisationController(final OrganisationService service) {
         this.service = service;
     }
 

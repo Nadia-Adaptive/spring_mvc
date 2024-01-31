@@ -33,7 +33,7 @@ public class State<T extends Entity> {
         return entities.values().stream();
     }
 
-    protected T getEntity(final int id){
+    protected T getEntity(final int id) {
         return entities.get(id);
     }
 }

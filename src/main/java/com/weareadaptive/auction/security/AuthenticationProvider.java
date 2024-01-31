@@ -1,12 +1,9 @@
 package com.weareadaptive.auction.security;
 
+import com.weareadaptive.auction.authentication.AuthenticationService;
 import com.weareadaptive.auction.user.UserService;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -14,9 +11,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.Optional;
+
 public class AuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     public boolean supports(final Class<?> authentication) {
@@ -37,21 +38,18 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
             throws AuthenticationException {
 
-        Object token = usernamePasswordAuthenticationToken.getCredentials();
+        Object principal = usernamePasswordAuthenticationToken.getPrincipal();
+        Object password = usernamePasswordAuthenticationToken.getCredentials();
         return Optional
-                .ofNullable(token)
-                .map(s -> getUser(String.valueOf(s)))
+                .ofNullable(password)
+                .ofNullable(principal)
+                .map(s -> getUser(String.valueOf(principal), String.valueOf(password)))
                 .orElseThrow();
     }
 
-    private UserDetails getUser(@NotNull final String token) {
-        var splitIndex = token.indexOf(":");
-        if (splitIndex < 1) {
-            throw new BadCredentialsException("Bad token");
-        }
-        var username = token.substring(0, splitIndex);
-        var password = token.substring(splitIndex + 1);
-        var user = userService.validateUserCredentials(username, password);
+    private UserDetails getUser(@NotNull final String username, @NotNull final String password) {
+
+        var user = authenticationService.validateUserCredentials(username, password);
 
         if (user == null) {
             throw new UsernameNotFoundException("Bad token");
@@ -63,5 +61,4 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
                 // .disabled(user.get().isBlocked())
                 .build();
     }
-
 }

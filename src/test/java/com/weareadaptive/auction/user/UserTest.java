@@ -22,7 +22,7 @@ public class UserTest {
     private static Stream<Arguments> createUserArguments() {
         return Stream.of(
                 Arguments.of("username",
-                        (Executable) () -> new User(1, null, "pp", "first", "last",  ORGANISATION1, UserRole.USER)),
+                        (Executable) () -> new User(1, null, "pp", "first", "last", ORGANISATION1, UserRole.USER)),
                 Arguments.of("firstName",
                         (Executable) () -> new User(1, "username", "pp", null, "last", ORGANISATION1, UserRole.USER)),
                 Arguments.of("lastName",
@@ -30,7 +30,7 @@ public class UserTest {
                 Arguments.of("organisation",
                         (Executable) () -> new User(1, "username", "pp", "first", "last", null, UserRole.USER)),
                 Arguments.of("password",
-                        (Executable) () -> new User(1, "username", null, "first", "last",  ORGANISATION1, UserRole.USER))
+                        (Executable) () -> new User(1, "username", null, "first", "last", ORGANISATION1, UserRole.USER))
         );
     }
 
@@ -58,7 +58,7 @@ public class UserTest {
     @Test
     @DisplayName("ValidatePassword should return true when the password is valid")
     public void shouldReturnTrueWhenThePasswordIsValid() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe",  ORGANISATION1, UserRole.USER);
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
 
         final var result = user.validatePassword("thepassword");
 
@@ -67,7 +67,7 @@ public class UserTest {
 
     @Test
     public void Update_NotEmptyUserFields_UserFieldsUpdated() {
-        final var user = new User(1, "test", "thepassword", "Jonh", "Doe",  ORGANISATION1, UserRole.USER);
+        final var user = new User(1, "test", "thepassword", "Jonh", "Doe", ORGANISATION1, UserRole.USER);
         final var testName = "Test user01";
 
         user.update("", testName, "", ORGANISATION2);

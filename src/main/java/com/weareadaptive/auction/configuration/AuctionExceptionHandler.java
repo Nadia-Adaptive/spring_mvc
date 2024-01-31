@@ -25,23 +25,25 @@ public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {BusinessException.class, IllegalArgumentException.class})
-    protected ResponseEntity<Object> handleBadRequestException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleBadRequestException(final RuntimeException ex, final WebRequest request) {
         return handleExceptionInternal(ex, createJSONMessage(ResponseStatus.BAD_REQUEST), headers,
                 HttpStatus.BAD_REQUEST, request);
     }
 
 
     @ExceptionHandler(value = {NotFoundException.class})
-    protected ResponseEntity<Object> handleNotFoundException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleNotFoundException(final RuntimeException ex, final WebRequest request) {
         return handleExceptionInternal(ex, createJSONMessage(ResponseStatus.NOT_FOUND), headers,
                 HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(value = {UsernameNotFoundException.class, BadCredentialsException.class})
-    protected ResponseEntity<Object> handleBadCredentialsException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleBadCredentialsException(final RuntimeException ex,
+                                                                   final WebRequest request) {
         return handleExceptionInternal(ex, createJSONMessage(ResponseStatus.BAD_CREDENTIALS), headers,
                 HttpStatus.BAD_REQUEST, request);
     }
+
     private Response createJSONMessage(final ResponseStatus errorMessage) {
         return new Response(errorMessage.getMessage());
     }

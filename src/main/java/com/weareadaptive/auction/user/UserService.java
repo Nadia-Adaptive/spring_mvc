@@ -3,30 +3,32 @@ package com.weareadaptive.auction.user;
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.NotFoundException;
 import com.weareadaptive.auction.organisation.Organisation;
-import com.weareadaptive.auction.organisation.OrganisationService;
+import com.weareadaptive.auction.organisation.OrganisationRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final OrganisationService organisationService;
+    private final OrganisationRepository organisationRepository;
 
-    public UserService(final UserRepository userRepository, OrganisationService organisationService) {
+    public UserService(final UserRepository userRepository, final OrganisationRepository organisationRepository) {
         this.userRepository = userRepository;
-        this.organisationService = organisationService;
+        this.organisationRepository = organisationRepository;
     }
 
     public User createUser(final String username, final String password, final String firstName, final String lastName,
                            final String organisationName, final UserRole role) {
         if (!username.matches("^[a-zA-Z0-9]*$") || (role == UserRole.ADMIN && organisationName != "ADMIN")) {
-            //TODO: Deal with magic string
+
             throw new BusinessException("Invalid parameters.");
         }
-        Organisation organisation = null;
-        try {
-            organisation = organisationService.get(organisationName);
-        } catch (final NotFoundException e) {
-            organisation = organisationService.addOrganisation(organisationName);
+        var organisation = organisationRepository.getOrganisationByName(organisationName);
+
+        if (organisation == null) {
+            organisation = new Organisation(organisationRepository.nextId(), organisationName, new ArrayList<>());
+            organisationRepository.add(organisation);
         }
 
         User user = new User(
@@ -35,12 +37,11 @@ public class UserService {
                 firstName, lastName,
                 organisation, role);
         userRepository.add(user);
-        organisationService.addUser(user);
         return user;
     }
 
 
-    public User getUser(int id) {
+    public User getUser(final int id) {
         final var user = userRepository.getUserById(id);
         if (user == null) {
             throw new NotFoundException("User does not exist.");
@@ -51,7 +52,7 @@ public class UserService {
     public User updateUser(final int id, final String password, final String firstName,
                            final String lastName, final String organisationName) {
         final var user = userRepository.getUserById(id);
-        final var organisation = organisationService.get(organisationName);
+        final var organisation = organisationRepository.getOrganisationByName(organisationName);
 
         if (user == null) {
             throw new NotFoundException("User does not exist.");
@@ -70,13 +71,5 @@ public class UserService {
 
         user.setAccessStatus(status);
         return user;
-    }
-
-    public User validateUserCredentials(final String username, final String password) {
-        final User user = userRepository.getUserByUsername(username);
-        if (user != null && user.validatePassword(password)) {
-            return user;
-        }
-        return null;
     }
 }

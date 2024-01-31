@@ -1,14 +1,13 @@
 package com.weareadaptive.auction.user;
 
-import static java.lang.String.format;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.State;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 @Component
 public class UserRepository extends State<User> {

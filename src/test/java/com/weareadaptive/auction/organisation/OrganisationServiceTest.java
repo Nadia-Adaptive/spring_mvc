@@ -1,6 +1,5 @@
 package com.weareadaptive.auction.organisation;
 
-import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.NotFoundException;
 import com.weareadaptive.auction.user.UserRepository;
 import com.weareadaptive.auction.user.UserRole;
@@ -10,14 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import static com.weareadaptive.auction.TestData.ADMIN_ORGANISATION;
 import static com.weareadaptive.auction.TestData.ORGANISATION1;
-import static com.weareadaptive.auction.TestData.ORGANISATION2;
 import static com.weareadaptive.auction.TestData.ORG_1;
-import static com.weareadaptive.auction.TestData.USER2;
-import static com.weareadaptive.auction.TestData.USER3;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OrganisationServiceTest {
     OrganisationService service;
@@ -28,7 +22,7 @@ public class OrganisationServiceTest {
         repo.add(ADMIN_ORGANISATION);
         repo.add(ORGANISATION1);
         service = new OrganisationService(repo);
-        final var userService = new UserService(new UserRepository(), service);
+        final var userService = new UserService(new UserRepository(), repo);
         userService.createUser("test01", "password", "first", "last", "organisation", UserRole.USER);
 
     }
@@ -42,17 +36,6 @@ public class OrganisationServiceTest {
     @Test
     void AddOrganisation_OrganisationDoesExist_ReturnsExistingOrganisation() {
         assertEquals(ORGANISATION1, service.addOrganisation(ORGANISATION1.organisationName()));
-    }
-
-    @Test
-    void AddUser_UserOrganisationExists_UserAddedToOrganisation() {
-        service.addUser(USER2);
-        assertTrue(ORGANISATION1.users().contains(USER2));
-    }
-
-    @Test
-    void AddUser_UserOrganisationDoesNotExist_Throws() {
-        assertThrows(NotFoundException.class, () -> service.addUser(USER3));
     }
 
     @Test

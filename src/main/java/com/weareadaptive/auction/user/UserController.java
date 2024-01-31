@@ -41,7 +41,7 @@ public class UserController {
                 body.get("lastName"), body.get("organisationName"), UserRole.valueOf(body.get("userRole")));
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new Response(ResponseStatus.CREATED.getMessage())); // TODO: Refactor response messages
+                .body(new Response(ResponseStatus.CREATED.getMessage()));
     }
 
     @PutMapping(value = "/{id}")

@@ -1,12 +1,14 @@
 package com.weareadaptive.auction.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weareadaptive.auction.Response;
+import com.weareadaptive.auction.ResponseStatus;
 import com.weareadaptive.auction.security.AuthenticationProvider;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @RestController()
 @PreAuthorize("hasRole('ROLE_ANONYMOUS')")
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,19 +24,28 @@ public class AuthenticationController {
     ObjectMapper mapper;
 
     AuthenticationProvider authenticationProvider;
+    AuthenticationService authService;
 
-    public AuthenticationController(final AuthenticationProvider authenticationProvider, final ObjectMapper mapper) {
+    public AuthenticationController(final AuthenticationProvider authenticationProvider, final ObjectMapper mapper,
+                                    final AuthenticationService authService) {
         this.authenticationProvider = authenticationProvider;
         this.mapper = mapper;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthToken> login(@RequestBody HashMap<String, String> body) {
-        final var auth =
-                authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(body.get("username"), body
-                        .get("username") + ":" + body.get("password")));
+    public ResponseEntity<AuthToken> login(@RequestBody final HashMap<String, String> body) {
+        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(body.get("username"), body.get("password"));
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
-        return ResponseEntity.ok().body(new AuthToken(String.valueOf(auth.getCredentials())));
+        final var auth = authenticationProvider.authenticate(requestAuthentication);
+
+        if (!auth.isAuthenticated()) {
+            throw new BadCredentialsException(ResponseStatus.BAD_CREDENTIALS.getMessage());
+        }
+
+        final var token = authService.generateJWTToken(body.get("username"));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return ResponseEntity.ok().body(new AuthToken(token));
     }
 }

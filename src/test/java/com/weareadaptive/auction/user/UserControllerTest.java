@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import java.util.stream.Stream;
 
 import static com.weareadaptive.auction.ControllerTestData.ADMIN_AUTH_TOKEN;
-
 import static com.weareadaptive.auction.TestData.ORGANISATION1;
 import static com.weareadaptive.auction.TestData.ORGANISATION3;
 import static com.weareadaptive.auction.TestData.ORG_1;
@@ -78,7 +77,7 @@ class UserControllerTest {
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .when()
                 .get(String.valueOf(id)).then()
-                .statusCode(HttpStatus.OK.value()).assertThat()
+                .statusCode(HttpStatus.OK.value())
                 .body(
                         "id", equalTo(id), "username", equalTo("test01"),
                         "firstName", equalTo("test"), "lastName", equalTo("test"),
@@ -97,16 +96,6 @@ class UserControllerTest {
     }
 
     @Test
-    public void AccessUserRoute_RoleIsUser_ReturnsMessageAnd403() {
-        given()
-                .baseUri(uri)
-                .header(AUTHORIZATION, testData.user1Token())
-                .when().get("3").then()
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .body("message", equalTo(ResponseStatus.FORBIDDEN.getMessage()));
-    }
-
-    @Test
     public void postUser_createUserWithValidInputs_ReturnsMessageAnd201() {
         final String userInput = """
                 {   "username": "test03", "firstName": "test03",
@@ -116,10 +105,10 @@ class UserControllerTest {
                 .baseUri(uri)
                 .header(AUTHORIZATION, ADMIN_AUTH_TOKEN)
                 .header("Content-Type", "application/json")
-        .when()
+                .when()
                 .body(userInput)
                 .post()
-        .then()
+                .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("message", equalTo(ResponseStatus.CREATED.getMessage()));
     }

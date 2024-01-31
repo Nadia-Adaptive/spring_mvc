@@ -1,24 +1,16 @@
 package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.model.BusinessException;
-import com.weareadaptive.auction.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.Stream;
-
 import static com.weareadaptive.auction.TestData.ADMIN;
 import static com.weareadaptive.auction.TestData.USER1;
 import static com.weareadaptive.auction.TestData.USER2;
-import static com.weareadaptive.auction.TestData.USER3;
-import static com.weareadaptive.auction.TestData.USER4;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserRepositoryTest {
     private UserRepository state;

@@ -1,5 +1,6 @@
 package com.weareadaptive.auction.organisation;
 
+import com.weareadaptive.auction.model.NotFoundException;
 import com.weareadaptive.auction.model.State;
 import com.weareadaptive.auction.user.User;
 import org.springframework.stereotype.Component;
@@ -21,27 +22,20 @@ public class OrganisationRepository extends State<Organisation> {
     }
 
     @Override
-    protected void onAdd(Organisation model) {
+    protected void onAdd(final Organisation model) {
         super.onAdd(model);
         organisationNameIndex.put(model.organisationName(), model);
     }
 
-    public Organisation addUserToOrganisation(final User u) {
-        final var organisation = organisationNameIndex.get(u.getOrganisationName());
-
-        if (organisation != null) {
-           organisation.users().add(u);
-        }
-        return organisation;
-    }
-    public Organisation removeUserFromOrganisation(final User u, final String oldOrganisation) {
+    public void removeUserFromOrganisation(final User u, final String oldOrganisation) {
         final var organisation = organisationNameIndex.get(oldOrganisation);
 
-        if (organisation != null && organisation.users().contains(u)) {
-           organisation.users().remove(u);
-            return organisation;
+        System.out.println(organisation);
+
+        if (organisation == null || !organisation.users().contains(u)) {
+            throw new NotFoundException("Organisation or user not found");
         }
-        return null;
+        organisation.users().remove(u);
     }
 
     public Organisation getOrganisation(final int id) {

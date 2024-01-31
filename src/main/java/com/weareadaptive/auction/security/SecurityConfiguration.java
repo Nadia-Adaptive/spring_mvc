@@ -72,7 +72,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    AccessDeniedHandler accessDeniedHandler(){
+    AccessDeniedHandler accessDeniedHandler() {
         return new AccessDeniedResponseHandler();
-    };
+    }
 }

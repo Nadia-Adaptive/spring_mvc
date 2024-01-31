@@ -8,20 +8,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication()
 public class AuctionHouseWebApplication {
-  public static void main(final String[] args) {
-    SpringApplication.run(AuctionHouseWebApplication.class, args);
-  }
+    public static void main(final String[] args) {
+        SpringApplication.run(AuctionHouseWebApplication.class, args);
+    }
 
-  @Bean
-  public WebMvcConfigurer configurer(){
-    return new WebMvcConfigurer() {
-      @Override
-      public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:5173/");
-      }
+    @Bean
+    public WebMvcConfigurer configurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(final CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:5173/");
+            }
 
 
-    };
-  }
-
+        };
+    }
 }

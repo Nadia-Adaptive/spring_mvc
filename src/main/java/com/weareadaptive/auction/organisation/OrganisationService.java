@@ -2,8 +2,6 @@ package com.weareadaptive.auction.organisation;
 
 import com.weareadaptive.auction.model.BusinessException;
 import com.weareadaptive.auction.model.NotFoundException;
-import com.weareadaptive.auction.user.UserService;
-import com.weareadaptive.auction.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,13 +13,6 @@ public class OrganisationService {
 
     public OrganisationService(final OrganisationRepository repository) {
         this.repository = repository;
-    }
-
-    public void addUser(final User user) {
-        final var organisation = repository.addUserToOrganisation(user);
-        if (organisation == null) {
-            throw new NotFoundException("User organisation not found.");
-        }
     }
 
     public List<Organisation> getAll() {
@@ -46,7 +37,7 @@ public class OrganisationService {
 
     public Organisation addOrganisation(final String organisationName) {
         final var existingOrganisation = repository.getOrganisationByName(organisationName);
-        if(existingOrganisation !=null){
+        if (existingOrganisation != null) {
             return existingOrganisation;
         }
         try {

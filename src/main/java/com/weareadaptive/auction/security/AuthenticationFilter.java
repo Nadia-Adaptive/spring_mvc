@@ -1,25 +1,30 @@
 package com.weareadaptive.auction.security;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
+import com.weareadaptive.auction.authentication.AuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String BEARER = "Bearer ";
+    @Autowired
+    private AuthenticationService authService;
 
     public AuthenticationFilter(final RequestMatcher requiresAuth) {
         super(requiresAuth);
@@ -35,11 +40,11 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
             throw new BadCredentialsException("Invalid Credentials");
         }
         token = token.substring(BEARER.length());
-        Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(token, token);
-        System.out.println(token);
-        System.out.println(requestAuthentication);
 
-        return getAuthenticationManager().authenticate(requestAuthentication);
+        final var user = authService.verifyJWTToken(token);
+        return new UsernamePasswordAuthenticationToken(user, token, new ArrayList<>() {{
+            add(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()));
+        }});
     }
 
     @Override

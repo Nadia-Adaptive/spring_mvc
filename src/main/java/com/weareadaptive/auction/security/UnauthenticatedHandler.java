@@ -18,12 +18,12 @@ import java.io.IOException;
 public class UnauthenticatedHandler implements AuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
+                                        final AuthenticationException exception) throws IOException, ServletException {
+        System.out.println(exception);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         ObjectMapper map = new ObjectMapper();
         map.writeValue(response.getOutputStream(), new Response(ResponseStatus.UNAUTHORIZED.getMessage()));
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }
