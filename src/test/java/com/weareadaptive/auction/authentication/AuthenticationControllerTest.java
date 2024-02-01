@@ -1,7 +1,8 @@
 package com.weareadaptive.auction.authentication;
 
 import com.weareadaptive.auction.ControllerTestData;
-import com.weareadaptive.auction.ResponseStatus;
+import com.weareadaptive.auction.response.ResponseStatus;
+import com.weareadaptive.auction.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,9 @@ class AuthenticationControllerTest {
                 .post("login")
         .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("token", containsString("eyJhbGciOiJIUzI1NiJ9"));
+                .body("data.token", containsString("eyJhbGciOiJIUzI1NiJ9"),
+                        "data.role", containsString(UserRole.ADMIN.name()),
+                        "data.username", containsString("ADMIN"));
         // @formatter:on
 
     }

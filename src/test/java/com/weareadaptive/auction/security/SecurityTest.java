@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.security;
 
 import com.weareadaptive.auction.ControllerTestData;
-import com.weareadaptive.auction.ResponseStatus;
+import com.weareadaptive.auction.response.ResponseStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

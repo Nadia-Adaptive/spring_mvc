@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.BusinessException;
-import com.weareadaptive.auction.model.NotFoundException;
+import com.weareadaptive.auction.exception.BusinessException;
+import com.weareadaptive.auction.exception.NotFoundException;
 import com.weareadaptive.auction.organisation.OrganisationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

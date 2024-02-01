@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.auction;
 
 import com.weareadaptive.auction.bid.Bid;
-import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.exception.BusinessException;
 import com.weareadaptive.auction.model.Entity;
 import com.weareadaptive.auction.user.User;
 

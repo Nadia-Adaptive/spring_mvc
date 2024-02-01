@@ -1,10 +1,11 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.exception.BusinessException;
 import com.weareadaptive.auction.model.State;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -31,5 +32,9 @@ public class UserRepository extends State<User> {
 
     public User getUserByUsername(final String username) {
         return usernameIndex.get(username);
+    }
+
+    public List<User> findAll() {
+        return stream().toList();
     }
 }

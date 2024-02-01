@@ -1,6 +1,6 @@
 package com.weareadaptive.auction.organisation;
 
-import com.weareadaptive.auction.ResponseStatus;
+import com.weareadaptive.auction.response.ResponseStatus;
 import com.weareadaptive.auction.TestData;
 import com.weareadaptive.auction.user.User;
 import org.junit.jupiter.api.BeforeEach;

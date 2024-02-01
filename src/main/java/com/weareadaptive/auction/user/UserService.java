@@ -1,12 +1,13 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.BusinessException;
-import com.weareadaptive.auction.model.NotFoundException;
+import com.weareadaptive.auction.exception.BusinessException;
+import com.weareadaptive.auction.exception.NotFoundException;
 import com.weareadaptive.auction.organisation.Organisation;
 import com.weareadaptive.auction.organisation.OrganisationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static utils.StringUtil.isNullOrEmpty;
 
@@ -22,11 +23,11 @@ public class UserService {
 
     public User createUser(final String username, final String password, final String firstName, final String lastName,
                            final String organisationName, final UserRole role) {
-        if(!username.matches("^[a-zA-Z0-9]*$")){
+        if (!username.matches("^[a-zA-Z0-9]*$")) {
             throw new BusinessException("Invalid username");
 
         }
-        if(isNullOrEmpty(organisationName)){
+        if (isNullOrEmpty(organisationName)) {
             throw new BusinessException("Cannot have empty organisation");
         }
         if (role == UserRole.ADMIN && !organisationName.equals("ADMIN")) {
@@ -35,7 +36,7 @@ public class UserService {
         if (role == UserRole.USER && organisationName.equals("ADMIN")) {
             throw new BusinessException("Users cannot be added to an admin organisation");
         }
-        
+
         var organisation = organisationRepository.getOrganisationByName(organisationName);
 
         if (organisation == null) {
@@ -52,6 +53,10 @@ public class UserService {
         return user;
     }
 
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
 
     public User getUser(final int id) {
         final var user = userRepository.getUserById(id);

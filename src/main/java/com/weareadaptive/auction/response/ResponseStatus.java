@@ -1,4 +1,4 @@
-package com.weareadaptive.auction;
+package com.weareadaptive.auction.response;
 public enum ResponseStatus {
     BAD_REQUEST("Bad request: invalid parameters."),
     OK("Content OK."),

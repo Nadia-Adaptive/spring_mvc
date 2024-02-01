@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.auction;
 
 import com.weareadaptive.auction.bid.Bid;
-import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

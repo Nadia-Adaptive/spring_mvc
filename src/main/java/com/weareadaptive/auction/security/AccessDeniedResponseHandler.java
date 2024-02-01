@@ -1,9 +1,8 @@
 package com.weareadaptive.auction.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weareadaptive.auction.ResponseStatus;
-import com.weareadaptive.auction.Response;
 import com.weareadaptive.auction.authentication.AuthenticationController;
+import com.weareadaptive.auction.response.ResponseBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +26,7 @@ public class AccessDeniedResponseHandler implements AccessDeniedHandler {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         ObjectMapper map = new ObjectMapper();
-        map.writeValue(response.getOutputStream(), new Response(ResponseStatus.FORBIDDEN.getMessage()));
+        map.writeValue(response.getOutputStream(), ResponseBuilder.forbidden());
        response.flushBuffer();
 
        logger.warn("Unauthorised user attempted to access admin route.");

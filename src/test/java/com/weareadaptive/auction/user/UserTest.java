@@ -1,6 +1,6 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.exception.BusinessException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

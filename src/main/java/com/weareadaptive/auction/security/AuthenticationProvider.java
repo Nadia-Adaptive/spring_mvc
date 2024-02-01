@@ -37,7 +37,6 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             final String userName,
             final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
             throws AuthenticationException {
-
         Object principal = usernamePasswordAuthenticationToken.getPrincipal();
         Object password = usernamePasswordAuthenticationToken.getCredentials();
         return Optional

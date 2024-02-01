@@ -1,7 +1,9 @@
 package com.weareadaptive.auction.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.weareadaptive.auction.ResponseStatus;
+import com.weareadaptive.auction.response.ResponseBody;
+import com.weareadaptive.auction.response.ResponseBuilder;
+import com.weareadaptive.auction.response.ResponseStatus;
 import com.weareadaptive.auction.security.AuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthToken> login(@RequestBody final HashMap<String, String> body) {
+    public ResponseEntity<ResponseBody> login(@RequestBody final HashMap<String, String> body) {
         Authentication requestAuthentication =
                 new UsernamePasswordAuthenticationToken(body.get("username"), body.get("password"));
 
@@ -49,8 +51,13 @@ public class AuthenticationController {
         final var token = authService.generateJWTToken(body.get("username"));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
+        final var role = auth.getAuthorities().toArray()[0].toString().substring("role_".length());
+
+
         logger.info("User signed in.");
 
-        return ResponseEntity.ok().body(new AuthToken(token));
+        System.out.println(role);
+
+        return ResponseBuilder.ok(new AuthenticationDTO(token, body.get("username"), role));
     }
 }

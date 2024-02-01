@@ -1,6 +1,6 @@
 package com.weareadaptive.auction.organisation;
 
-import com.weareadaptive.auction.model.NotFoundException;
+import com.weareadaptive.auction.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,9 @@
 package com.weareadaptive.auction.configuration;
 
-import com.weareadaptive.auction.Response;
-import com.weareadaptive.auction.ResponseStatus;
-import com.weareadaptive.auction.model.BusinessException;
-import com.weareadaptive.auction.model.NotFoundException;
+import com.weareadaptive.auction.exception.BusinessException;
+import com.weareadaptive.auction.exception.NotFoundException;
+import com.weareadaptive.auction.response.ResponseBuilder;
+import com.weareadaptive.auction.response.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +27,10 @@ public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
     }
 
-    @ExceptionHandler(value = {BusinessException.class, IllegalArgumentException.class})
+    @ExceptionHandler(value = {BusinessException.class, IllegalArgumentException.class, NullPointerException.class})
     protected ResponseEntity<Object> handleBadRequestException(final RuntimeException ex, final WebRequest request) {
         logException(ResponseStatus.BAD_REQUEST, ex);
-        return handleExceptionInternal(ex, createJSONMessage(ResponseStatus.BAD_REQUEST), headers,
+        return handleExceptionInternal(ex, ResponseBuilder.badRequest(), headers,
                 HttpStatus.BAD_REQUEST, request);
     }
 
@@ -38,7 +38,7 @@ public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {NotFoundException.class})
     protected ResponseEntity<Object> handleNotFoundException(final RuntimeException ex, final WebRequest request) {
         logException(ResponseStatus.NOT_FOUND, ex);
-        return handleExceptionInternal(ex, createJSONMessage(ResponseStatus.NOT_FOUND), headers,
+        return handleExceptionInternal(ex, ResponseBuilder.notFound(), headers,
                 HttpStatus.NOT_FOUND, request);
     }
 
@@ -46,12 +46,8 @@ public class AuctionExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleBadCredentialsException(final RuntimeException ex,
                                                                    final WebRequest request) {
         logException(ResponseStatus.BAD_CREDENTIALS, ex);
-        return handleExceptionInternal(ex, createJSONMessage(ResponseStatus.BAD_CREDENTIALS), headers,
+        return handleExceptionInternal(ex, ResponseBuilder.badCredentials(), headers,
                 HttpStatus.BAD_REQUEST, request);
-    }
-
-    private Response createJSONMessage(final ResponseStatus errorMessage) {
-        return new Response(errorMessage.getMessage());
     }
 
     private void logException(final ResponseStatus status, final Exception ex) {

@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.organisation;
 
-import com.weareadaptive.auction.model.BusinessException;
-import com.weareadaptive.auction.model.NotFoundException;
+import com.weareadaptive.auction.exception.BusinessException;
+import com.weareadaptive.auction.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

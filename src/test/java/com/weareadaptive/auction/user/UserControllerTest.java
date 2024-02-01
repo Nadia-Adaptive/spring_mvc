@@ -1,7 +1,7 @@
 package com.weareadaptive.auction.user;
 
 import com.weareadaptive.auction.ControllerTestData;
-import com.weareadaptive.auction.ResponseStatus;
+import com.weareadaptive.auction.response.ResponseStatus;
 import com.weareadaptive.auction.organisation.OrganisationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,9 +79,9 @@ class UserControllerTest {
                 .get(String.valueOf(id)).then()
                 .statusCode(HttpStatus.OK.value())
                 .body(
-                        "id", equalTo(id), "username", equalTo("test01"),
-                        "firstName", equalTo("test"), "lastName", equalTo("test"),
-                        "organisationName", equalTo(ORG_1), "accessStatus", equalTo("ALLOWED"), "userRole",
+                        "data.id", equalTo(id), "data.username", equalTo("test01"),
+                        "data.firstName", equalTo("test"), "data.lastName", equalTo("test"),
+                        "data.organisationName", equalTo(ORG_1), "data.accessStatus", equalTo("ALLOWED"), "data.userRole",
                         equalTo("USER"));
     }
 

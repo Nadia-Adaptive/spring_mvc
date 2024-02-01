@@ -1,6 +1,6 @@
 package com.weareadaptive.auction.user;
 
-import com.weareadaptive.auction.model.BusinessException;
+import com.weareadaptive.auction.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,13 +24,6 @@ public class UserRepositoryTest {
     @Test
     @DisplayName("findUserByUsername should return a user when passed valid credentials")
     public void shouldGetUserWhenPassedValidCredentials() {
-        final var user = state.getUserByUsername(ADMIN.getUsername());
-        assertEquals(ADMIN, user);
-    }
-
-    @Test
-    @DisplayName("findUserByUsername should return a user when passed valid credentials")
-    public void getUserByUsername() {
         final var user = state.getUserByUsername(ADMIN.getUsername());
         assertEquals(ADMIN, user);
     }

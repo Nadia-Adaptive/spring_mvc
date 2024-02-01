@@ -1,6 +1,6 @@
 package com.weareadaptive.auction.organisation;
 
-import com.weareadaptive.auction.model.NotFoundException;
+import com.weareadaptive.auction.exception.NotFoundException;
 import com.weareadaptive.auction.model.State;
 import com.weareadaptive.auction.user.User;
 import org.springframework.stereotype.Component;
