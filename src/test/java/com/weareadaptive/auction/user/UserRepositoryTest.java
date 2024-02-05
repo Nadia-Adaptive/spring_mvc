@@ -47,4 +47,16 @@ public class UserRepositoryTest {
         state.add(USER2);
         assertThrows(BusinessException.class, () -> state.add(USER2));
     }
+
+    @Test
+    @DisplayName("getUserById returns a user")
+    public void getUserById() {
+        assertEquals(ADMIN, state.getUserById(0));
+    }
+
+    @Test
+    @DisplayName("getUserById returns null when passed an invalid id")
+    public void getUserByInvalidId() {
+        assertEquals(null, state.getUserById(-1));
+    }
 }

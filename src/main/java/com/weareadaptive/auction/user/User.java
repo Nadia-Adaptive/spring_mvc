@@ -6,7 +6,7 @@ import com.weareadaptive.auction.organisation.Organisation;
 
 import java.util.Objects;
 
-import static utils.StringUtil.isNullOrEmpty;
+import static com.weareadaptive.auction.utils.StringUtil.isNullOrEmpty;
 
 public class User implements Entity {
     private final int id;

@@ -59,15 +59,13 @@ public class AuthenticationServiceTest {
 
     @Test
     @DisplayName("validateUserCredentials should return a user when passed valid credentials")
-    public void successfulValidateUserCredentials() {
-        final var user = service.validateUserCredentials(USER1.getUsername(), password);
-        assertEquals(USER1, user);
+    public void validateUserCredentials() {
+        assertEquals(USER1, service.validateUserCredentials(USER1.getUsername(), password));
     }
 
     @Test
     @DisplayName("validateUserCredentials should return null when passed invalid credentials")
-    public void failedValidateUserCredentials() {
-        final var user = service.validateUserCredentials("invalid", password);
-        assertNull(user);
+    public void validateUserCredentialsProvidedInvalidToken() {
+        assertNull(service.validateUserCredentials("invalid", password));
     }
 }

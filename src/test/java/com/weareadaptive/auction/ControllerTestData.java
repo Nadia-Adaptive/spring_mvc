@@ -1,6 +1,7 @@
 package com.weareadaptive.auction;
 
 import com.github.javafaker.Faker;
+import com.weareadaptive.auction.auction.AuctionService;
 import com.weareadaptive.auction.authentication.AuthenticationService;
 import com.weareadaptive.auction.organisation.OrganisationService;
 import com.weareadaptive.auction.user.User;
@@ -19,6 +20,7 @@ import static com.weareadaptive.auction.security.AuthenticationFilter.BEARER;
 public class ControllerTestData {
     public static String adminAuthToken;
     private final UserService userService;
+    private final AuctionService auctionService;
     private final OrganisationService organisationService;
 
     private final AuthenticationService authenticationService;
@@ -26,16 +28,18 @@ public class ControllerTestData {
     private User admin;
     private User user1;
 
-    public ControllerTestData(final UserService userService, final OrganisationService organisationService,
+    public ControllerTestData(final UserService userService, final AuctionService auctionService,
+                              final OrganisationService organisationService,
                               final AuthenticationService authenticationService) {
         this.userService = userService;
+        this.auctionService = auctionService;
         this.organisationService = organisationService;
         this.authenticationService = authenticationService;
-
 
         userService.createUser("admin", "admin", "admin", "admin", "ADMIN", UserRole.ADMIN);
 
         adminAuthToken = BEARER + authenticationService.generateJWTToken("admin");
+        auctionService.createAuction(1, "TEST", 1.0, 10);
 
         faker = new Faker();
     }
@@ -43,7 +47,7 @@ public class ControllerTestData {
     @EventListener(ApplicationReadyEvent.class)
     public void createInitData() {
         user1 = createRandomUser();
-        System.out.println(user1);
+
         organisationService.addOrganisation(ORG_1);
         organisationService.addOrganisation(ORG_3);
     }

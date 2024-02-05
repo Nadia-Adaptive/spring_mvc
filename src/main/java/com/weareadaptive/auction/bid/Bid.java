@@ -1,23 +1,22 @@
 package com.weareadaptive.auction.bid;
 
 import com.weareadaptive.auction.exception.BusinessException;
-import com.weareadaptive.auction.user.User;
+import com.weareadaptive.auction.model.Entity;
 
 import java.time.Instant;
 import java.util.Objects;
 
-public class Bid implements Comparable<Bid> {
+public class Bid implements Comparable<Bid>, Entity {
     private final Instant timestamp;
+    private final int id;
     private final double price;
     private final int quantity;
-    private final User buyer;
+    private final int bidderId;
     private int quantityFilled;
     private BidFillStatus status;
 
-    public Bid(final User buyer, final double price, final int quantity, final Instant timestamp) {
-        if (buyer == null) {
-            throw new BusinessException("Buyer cannot be null.");
-        }
+    public Bid(final int id, final int bidderId, final double price, final int quantity, final Instant timestamp) {
+        this.id = id;
         if (price <= 0) {
             throw new BusinessException("Price must be greater than zero.");
         }
@@ -27,7 +26,7 @@ public class Bid implements Comparable<Bid> {
 
         this.price = price;
         this.quantity = quantity;
-        this.buyer = buyer;
+        this.bidderId = bidderId;
         this.status = BidFillStatus.PENDING;
         this.timestamp = timestamp;
     }
@@ -44,8 +43,8 @@ public class Bid implements Comparable<Bid> {
         return quantity;
     }
 
-    public User getBuyer() {
-        return buyer;
+    public int getBidderId() {
+        return bidderId;
     }
 
     @Override
@@ -102,11 +101,16 @@ public class Bid implements Comparable<Bid> {
             return false;
         }
         Bid bid = (Bid) o;
-        return getTimestamp().equals(bid.getTimestamp()) && getBuyer().equals(bid.getBuyer());
+        return getTimestamp().equals(bid.getTimestamp()) && getBidderId() == bid.getBidderId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTimestamp(), getBuyer());
+        return Objects.hash(getTimestamp(), getBidderId());
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }

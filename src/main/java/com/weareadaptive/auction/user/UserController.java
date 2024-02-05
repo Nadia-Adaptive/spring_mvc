@@ -70,9 +70,17 @@ public class UserController {
     public ResponseEntity updateUserAccessStatus(@PathVariable final int id,
                                                  @RequestBody final HashMap<String, String> body) {
         final var accessStatus = AccessStatus.valueOf(body.get("accessStatus"));
+
         logger.info("Request to update user with id " + id + " permissions to " + accessStatus.name());
 
         userService.updateUserStatus(id, accessStatus);
         return ResponseBuilder.ok();
+    }
+
+    @GetMapping("/{id}/auctions")
+    ResponseEntity<ResponseBody> getAuctions(@PathVariable final int id) {
+        logger.info("Request to get user with id " + id + " auctions.");
+        System.out.println(userService.getUserAuctions(id));
+        return ResponseBuilder.ok(userService.getUserAuctions(id));
     }
 }

@@ -18,10 +18,6 @@ public class TestData {
         add(USER3);
     }});
 
-    public static final Organisation ORGANISATION3 = new Organisation(12, ORG_3, new ArrayList<>() {{
-        add(USER3);
-    }});
-
     public static final Organisation ADMIN_ORGANISATION = new Organisation(13, "ADMIN", new ArrayList<>() {{
         add(ADMIN);
     }});
@@ -35,8 +31,8 @@ public class TestData {
     public static final User USER4 =
             new User(4, "testuser4", "password", "naomie", "legault", ORGANISATION2, UserRole.USER);
 
-    public static final Auction AUCTION1 = new Auction(0, USER4, "TEST", 1.0, 10);
-    public static final Auction AUCTION2 = new Auction(1, USER3, "TEST2", 2.0, 11);
-    public static final Auction AUCTION3 = new Auction(2, USER1, "TEST3", 3.0, 12);
+    public static final Auction AUCTION1 = new Auction(0, 1, "TEST", 1.0, 10);
+    public static final Auction AUCTION2 = new Auction(1, 1, "TEST2", 2.0, 11);
+    public static final Auction AUCTION3 = new Auction(2, 3, "TEST3", 3.0, 12);
     public static final String PASSWORD = "mypassword";
 }

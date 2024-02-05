@@ -1,5 +1,7 @@
 package com.weareadaptive.auction.user;
 
+import com.weareadaptive.auction.auction.Auction;
+import com.weareadaptive.auction.auction.AuctionRepository;
 import com.weareadaptive.auction.exception.BusinessException;
 import com.weareadaptive.auction.exception.NotFoundException;
 import com.weareadaptive.auction.organisation.Organisation;
@@ -9,16 +11,19 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static utils.StringUtil.isNullOrEmpty;
+import static com.weareadaptive.auction.utils.StringUtil.isNullOrEmpty;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final OrganisationRepository organisationRepository;
+    private final AuctionRepository auctionRepository;
 
-    public UserService(final UserRepository userRepository, final OrganisationRepository organisationRepository) {
+    public UserService(final UserRepository userRepository, final OrganisationRepository organisationRepository,
+                       final AuctionRepository auctionRepository) {
         this.userRepository = userRepository;
         this.organisationRepository = organisationRepository;
+        this.auctionRepository = auctionRepository;
     }
 
     public User createUser(final String username, final String password, final String firstName, final String lastName,
@@ -88,5 +93,12 @@ public class UserService {
 
         user.setAccessStatus(status);
         return user;
+    }
+
+    public List<Auction> getUserAuctions(final int id) {
+        if (userRepository.getUserById(id) == null) {
+            throw new NotFoundException("User does not exist.");
+        }
+        return auctionRepository.getUserAuctions(id).toList();
     }
 }

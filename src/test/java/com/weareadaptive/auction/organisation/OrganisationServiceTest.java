@@ -1,9 +1,6 @@
 package com.weareadaptive.auction.organisation;
 
 import com.weareadaptive.auction.exception.NotFoundException;
-import com.weareadaptive.auction.user.UserRepository;
-import com.weareadaptive.auction.user.UserRole;
-import com.weareadaptive.auction.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,12 +17,10 @@ public class OrganisationServiceTest {
     @BeforeEach
     public void initState() {
         final var repo = new OrganisationRepository();
+
         repo.add(ADMIN_ORGANISATION);
         repo.add(ORGANISATION1);
         service = new OrganisationService(repo);
-        final var userService = new UserService(new UserRepository(), repo);
-        userService.createUser("test01", "password", "first", "last", "organisation", UserRole.USER);
-
     }
 
     @Test
@@ -57,7 +52,7 @@ public class OrganisationServiceTest {
     @Test
     @DisplayName("GetAllOrganisations_ReturnsOrganisations")
     void getAllOrganisations() {
-        assertEquals(3, service.getAll().size());
+        assertEquals(2, service.getAll().size());
     }
 
     @Test

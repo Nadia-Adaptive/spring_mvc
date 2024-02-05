@@ -50,7 +50,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    @DisplayName("PostLogin_InvalidCredentials_ReturnsMessage")
+    @DisplayName("POST auth/login with invalid credentials returns a message")
     public void postLoginWithInvalidCredentials() {
         //@formatter:off
         given()

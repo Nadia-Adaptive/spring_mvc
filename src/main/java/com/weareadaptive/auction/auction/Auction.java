@@ -3,7 +3,6 @@ package com.weareadaptive.auction.auction;
 import com.weareadaptive.auction.bid.Bid;
 import com.weareadaptive.auction.exception.BusinessException;
 import com.weareadaptive.auction.model.Entity;
-import com.weareadaptive.auction.user.User;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -12,15 +11,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static utils.StringUtil.isNullOrEmpty;
+import static com.weareadaptive.auction.utils.StringUtil.isNullOrEmpty;
 
 public class Auction implements Entity {
     private final List<Bid> bids;
     private final int id;
-    private final String symbol;
+    private final String product;
     private final double minPrice;
     private final int quantity;
-    private final User seller;
+    private final int ownerId;
     private AuctionStatus auctionStatus;
     private Instant closingTime;
     private BigDecimal totalRevenue;
@@ -30,13 +29,11 @@ public class Auction implements Entity {
     private final List<Bid> winningBids;
     private final List<Bid> losingBids;
 
-    public Auction(final int id, final User seller, final String symbol, final double minPrice, final int quantity) {
+    public Auction(final int id, final int ownerId, final String symbol, final double minPrice, final int quantity) {
         if (isNullOrEmpty(symbol)) {
             throw new BusinessException("Symbol cannot be empty!");
         }
-        if (seller == null) {
-            throw new BusinessException("Seller cannot be null!");
-        }
+
         if (minPrice <= 0d) {
             throw new BusinessException("Price cannot be less than or equal to zero.");
         }
@@ -45,8 +42,8 @@ public class Auction implements Entity {
         }
 
         this.id = id;
-        this.seller = seller;
-        this.symbol = symbol;
+        this.ownerId = ownerId;
+        this.product = symbol;
         this.minPrice = minPrice;
         this.quantity = quantity;
         bids = new ArrayList<>();
@@ -69,12 +66,12 @@ public class Auction implements Entity {
         return minPrice;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getProduct() {
+        return product;
     }
 
-    public User getSeller() {
-        return seller;
+    public int getOwnerId() {
+        return ownerId;
     }
 
     public AuctionStatus getStatus() {
@@ -94,9 +91,6 @@ public class Auction implements Entity {
     }
 
     public Stream<Bid> getWinningBids() {
-        if (auctionStatus == AuctionStatus.OPEN) {
-            throw new BusinessException("Cannot get winning bids while auction is open.");
-        }
         return winningBids.stream();
     }
 
@@ -109,7 +103,7 @@ public class Auction implements Entity {
             throw new BusinessException("Bid doesn't meet minimum price.");
         }
 
-        if (bid.getBuyer().equals(seller)) {
+        if (bid.getBidderId() == ownerId) {
             throw new BusinessException("A seller cannot bid on their own auction.");
 
         }
@@ -140,16 +134,12 @@ public class Auction implements Entity {
         this.auctionStatus = AuctionStatus.CLOSED;
     }
 
-    public Boolean hasUserBid(final String username) {
-        return bids.stream().anyMatch(b -> b.getBuyer().getUsername().equals(username));
+    public Boolean hasUserBid(final int userId) {
+        return bids.stream().anyMatch(b -> b.getBidderId() == userId);
     }
 
-    @Override
-    public String toString() {
-        return "Auction{id=%d, symbol='%s', seller='%s'}".formatted(id, symbol, seller);
-    }
 
-    public Stream<Bid> getLosingBids() {
-        return losingBids.stream();
+    public List<Bid> getLosingBids() {
+        return losingBids;
     }
 }
